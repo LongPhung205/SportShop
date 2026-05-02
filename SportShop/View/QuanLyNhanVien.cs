@@ -14,21 +14,6 @@ namespace SportShop.View
     {
         private QuanLyNguoiDungController _userController = new QuanLyNguoiDungController();
 
-        // 👉 VIEWMODEL: Lớp ảo để nối dữ liệu Nhân Viên và Lương xuất ra GridView
-        public class NhanVienLuongViewModel
-        {
-            public int Id { get; set; }
-            public string Username { get; set; }
-            public string FullName { get; set; }
-            public string Role { get; set; }
-            public decimal HourlyRate { get; set; }
-            public bool IsActive { get; set; }
-
-            public decimal TongGioLam { get; set; }
-            public decimal TongLuong { get; set; }
-            public string TrangThaiLuong { get; set; }
-        }
-
         public QuanLyNhanVien()
         {
             InitializeComponent();
@@ -112,7 +97,7 @@ namespace SportShop.View
                 string filterStatus = cboTrangThaiLuong.SelectedItem?.ToString() ?? "Tất cả";
 
                 var rawUsers = _userController.GetAllUsers();
-                var displayList = new List<NhanVienLuongViewModel>();
+                var displayList = new List<NhanVienLuongModel>();
 
                 foreach (var u in rawUsers)
                 {
@@ -125,7 +110,7 @@ namespace SportShop.View
                     if (filterStatus == "Chưa trả" && daTra) continue;
                     if (filterStatus == "Đã trả" && !daTra) continue;
 
-                    displayList.Add(new NhanVienLuongViewModel
+                    displayList.Add(new NhanVienLuongModel
                     {
                         Id = u.Id,
                         Username = u.Username,
@@ -192,6 +177,13 @@ namespace SportShop.View
                 return;
             }
 
+            // 👉 CHỐT CHẶN 1: KHÔNG ĐƯỢC CHỐT LƯƠNG SỚM
+            if (dtpDenNgay.Value.Date > DateTime.Now.Date)
+            {
+                MessageBox.Show("NGUYÊN TẮC KẾ TOÁN: Không thể chốt lương cho kỳ chưa kết thúc!\nNhân viên vẫn có thể phát sinh giờ làm trong hôm nay hoặc các ngày tới. Vui lòng chọn 'Đến ngày' là một ngày trong quá khứ.", "Khóa Chốt Lương", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                return;
+            }
+
             string status = dgvNhanVien.CurrentRow.Cells["TrangThaiLuong"].Value.ToString();
             if (status == "Đã trả")
             {
@@ -220,11 +212,17 @@ namespace SportShop.View
                 }
             }
         }
-
         private void btnTraLuongTatCa_Click(object sender, EventArgs e)
         {
-            var list = dgvNhanVien.DataSource as List<NhanVienLuongViewModel>;
+            var list = dgvNhanVien.DataSource as List<NhanVienLuongModel>;
             if (list == null || list.Count == 0) return;
+
+            // 👉 CHỐT CHẶN 1: KHÔNG ĐƯỢC CHỐT LƯƠNG SỚM
+            if (dtpDenNgay.Value.Date >= DateTime.Now.Date)
+            {
+                MessageBox.Show("NGUYÊN TẮC KẾ TOÁN: Không thể chốt lương hàng loạt cho kỳ chưa kết thúc!\nVui lòng chọn 'Đến ngày' là một ngày trong quá khứ (ví dụ: ngày cuối cùng của tháng trước).", "Khóa Chốt Lương", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                return;
+            }
 
             // Tìm những người chưa trả và có lương > 0
             var toPay = list.Where(x => x.TrangThaiLuong == "Chưa trả" && x.TongLuong > 0).ToList();

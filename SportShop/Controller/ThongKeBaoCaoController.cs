@@ -7,7 +7,6 @@ using System.Data.SqlClient;
 
 namespace SportShop.Controller
 {
-
     // ==========================================
     // CONTROLLER CHÍNH
     // ==========================================
@@ -24,7 +23,7 @@ namespace SportShop.Controller
             const string sqlThu = "SELECT ISNULL(SUM(TotalAmount), 0) FROM Orders WHERE CAST(OrderDate AS DATE) >= CAST(@tu AS DATE) AND CAST(OrderDate AS DATE) <= CAST(@den AS DATE)";
             // 2. Tổng chi phí nhập hàng (chỉ lấy phiếu đã chốt)
             const string sqlNhap = "SELECT ISNULL(SUM(TotalAmount), 0) FROM ImportOrder WHERE CAST(ImportDate AS DATE) >= CAST(@tu AS DATE) AND CAST(ImportDate AS DATE) <= CAST(@den AS DATE) AND Status = 'COMPLETED'";
-            // 3. Tổng chi phí phát sinh khác (Expense) - Giữ nguyên logic cũ của bạn
+            // 3. Tổng chi phí phát sinh khác (Expense)
             const string sqlChiPhi = "SELECT ISNULL(SUM(Amount), 0) FROM Expense WHERE CAST(ExpenseDate AS DATE) >= CAST(@tu AS DATE) AND CAST(ExpenseDate AS DATE) <= CAST(@den AS DATE)";
 
             var parameters = new[] {
@@ -90,8 +89,7 @@ namespace SportShop.Controller
                     Ngay = Convert.ToDateTime(row["Ngay"]),
                     SoLuongDon = Convert.ToInt32(row["SoLuongDon"]),
                     TongDoanhThu = doanhThu,
-
-                    // Lợi nhuận tạm tính (Giả định tỷ suất 30% để vẽ biểu đồ, bạn có thể custom lại nếu có cột Giá vốn)
+                    // Lợi nhuận tạm tính (Giả định tỷ suất 30% để vẽ biểu đồ)
                     LoiNhuan = doanhThu * 0.3m
                 });
             }
@@ -132,7 +130,6 @@ namespace SportShop.Controller
             {
                 list.Add(new ThongKeSanPham
                 {
-                    // Nối chuỗi để hiển thị Tên - Size - Màu (Lấy logic cũ của bạn)
                     TenSanPham = $"{row["ProductName"]} - {row["SizeName"]} - {row["ColorName"]}",
                     SoLuong = Convert.ToInt32(row["TongSoLuongBan"]),
                     TongTien = Convert.ToDecimal(row["TongTienThuVe"])
@@ -144,13 +141,9 @@ namespace SportShop.Controller
         // ==========================================
         // 4. TOP KHÁCH HÀNG MUA NHIỀU NHẤT
         // ==========================================
-        // ==========================================
-        // 4. TOP KHÁCH HÀNG MUA NHIỀU NHẤT
-        // ==========================================
         public DataTable GetTopKhachHang(int top, DateTime tuNgay, DateTime denNgay)
         {
-            // Mẹo: Dùng LEFT JOIN phòng trường hợp đơn hàng khách vãng lai không có CustomerId
-            // Hoặc bảng Khách hàng của bạn tên khác, hãy check lại FROM Orders o LEFT JOIN ...
+            // Đã đổi thành c.Name theo chuẩn Database của bạn
             string sql = $@"
                 SELECT TOP {top} 
                     ISNULL(c.Name, N'Khách vãng lai') AS TenKhachHang, 
@@ -177,7 +170,6 @@ namespace SportShop.Controller
         // ==========================================
         public DataTable GetSanPhamTonKhoThap(int threshold)
         {
-            // Đã xóa điều kiện IsActive = 1 đề phòng database của bạn không có cột này
             const string sql = @"
                 SELECT p.Name + ' (' + ISNULL(c.Name, '') + ' - ' + ISNULL(s.Name, '') + ')' AS TenSanPham, 
                        pv.Quantity
@@ -190,6 +182,36 @@ namespace SportShop.Controller
 
             var p = new SqlParameter("@minQty", SqlDbType.Int) { Value = threshold };
             return DBConnection.GetDataTable(sql, new[] { p });
+        }
+
+        // ==========================================
+        // 6. CHI TIẾT HÓA ĐƠN
+        // ==========================================
+        public DataTable GetChiTietHoaDon(DateTime tuNgay, DateTime denNgay)
+        {
+            // Đã đổi c.FullName thành c.Name
+            // Đã đổi pv.ImportPrice thành pv.CostPrice (Giá vốn lưu trong ProductVariant)
+            string sql = @"
+                SELECT 
+                    o.Id AS [Mã HĐ],
+                    o.OrderDate AS [Ngày Bán],
+                    ISNULL(c.Name, N'Khách vãng lai') AS [Khách Hàng],
+                    ISNULL(SUM(od.Quantity * od.UnitPrice), 0) AS [Doanh Thu],
+                    ISNULL(SUM(od.Quantity * pv.CostPrice), 0) AS [Giá Vốn (Trừ Kho)],
+                    ISNULL(SUM(od.Quantity * od.UnitPrice), 0) - ISNULL(SUM(od.Quantity * pv.CostPrice), 0) AS [Lợi Nhuận]
+                FROM Orders o
+                INNER JOIN OrderDetail od ON o.Id = od.OrderId
+                INNER JOIN ProductVariant pv ON od.ProductVariantId = pv.Id
+                LEFT JOIN Customer c ON o.CustomerId = c.Id
+                WHERE CAST(o.OrderDate AS DATE) >= CAST(@tu AS DATE) 
+                  AND CAST(o.OrderDate AS DATE) <= CAST(@den AS DATE)
+                GROUP BY o.Id, o.OrderDate, c.Name
+                ORDER BY o.OrderDate DESC";
+
+            return DBConnection.GetDataTable(sql, new[] {
+                new SqlParameter("@tu", SqlDbType.Date) { Value = tuNgay },
+                new SqlParameter("@den", SqlDbType.Date) { Value = denNgay }
+            });
         }
     }
 }

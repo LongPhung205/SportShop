@@ -123,6 +123,7 @@
     <Compile Include="Model\ImportOrder.cs" />
     <Compile Include="Model\ImportOrderDetail.cs" />
     <Compile Include="Model\InventoryLog.cs" />
+    <Compile Include="Model\NhanVienLuongModel.cs" />
     <Compile Include="Model\Order.cs" />
     <Compile Include="Model\OrderDetail.cs" />
     <Compile Include="Model\OrderVoucher.cs" />

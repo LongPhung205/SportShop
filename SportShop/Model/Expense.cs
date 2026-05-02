@@ -14,6 +14,7 @@ namespace SportShop.Model
         // Mở rộng hiển thị
         public string UserName { get; set; }
 
+
         // Navigation
         public User User { get; set; }
 
