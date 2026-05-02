@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="04/21/2026 19:35:23" ReportInfo.Modified="04/27/2026 22:17:28" ReportInfo.CreatorVersion="2026.2.0.0">
+  <Dictionary>
+    <TableDataSource Name="Data" ReferenceName="Data" DataType="System.Int32" Enabled="true">
+      <Column Name="STT" DataType="System.Int32"/>
+      <Column Name="TenSP" DataType="System.String"/>
+      <Column Name="MauSac" DataType="System.String"/>
+      <Column Name="Size" DataType="System.String"/>
+      <Column Name="SoLuong" DataType="System.Int32"/>
+      <Column Name="Gia" DataType="System.Double"/>
+      <Column Name="GiamGia" DataType="System.Double"/>
+      <Column Name="ThanhTien" DataType="System.Double"/>
+    </TableDataSource>
+    <Parameter Name="TenKhachHang" DataType="System.String" AsString=""/>
+    <Parameter Name="SoDienThoai" DataType="System.String" AsString=""/>
+    <Parameter Name="DiaChi" DataType="System.String" AsString=""/>
+    <Parameter Name="NgayIn" DataType="System.String" AsString=""/>
+    <Parameter Name="TongTien" DataType="System.Double" AsString=""/>
+  </Dictionary>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="220">
+      <TextObject Name="lblHoaDonBanHang" Left="378" Top="9.45" Width="300" Height="28.35" Text="HÓA ĐƠN BÁN HÀNG" Font="Arial, 18pt, style=Bold" TextFill.Color="Firebrick"/>
+      <TextObject Name="lblTenCongty" Left="9.45" Top="9.45" Width="368.55" Height="28.35" Text="Công Ty TNHH VELOCIUM" Font="Arial, 16pt, style=Bold" TextFill.Color="DarkBlue"/>
+      <TextObject Name="lblDiaChi" Left="9.45" Top="45" Width="60" Height="20" Text="Địa chỉ:" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="txtDiaChi" Left="70" Top="45" Width="300" Height="20" Text="41A đường Phú Diễn, P. Phú Diễn, Hà Nội" Font="Arial, 10pt"/>
+      <TextObject Name="lblDienThoai" Left="9.45" Top="65" Width="99.45" Height="20" Text="Số điện thoại:" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="txtDienThoai" Left="118.9" Top="65" Width="200" Height="20" Text="0378 203 598" Font="Arial, 10pt"/>
+      <TextObject Name="lblEmail" Left="9.45" Top="85" Width="50" Height="20" Text="Email:" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="txtEmail" Left="60" Top="85" Width="200" Height="20" Text="velocium@gmail.com" Font="Arial, 10pt"/>
+      <TextObject Name="Text5" Left="378" Top="45" Width="340" Height="20" Text="Chuyên Cung Cấp Đồ Thể Thao Chất Lượng" Font="Arial, 10pt, style=Italic"/>
+      <TextObject Name="Text6" Left="378" Top="65" Width="340" Height="20" Text="Uy Tín - Bảo Hành Trọn Đời - Giá Rẻ" Font="Arial, 10pt, style=Italic"/>
+      <TextObject Name="txtNgayIn" Left="378" Top="85" Width="340" Height="20" Text="Ngày in: [NgayIn]" Font="Arial, 10pt"/>
+      <LineObject Name="Line1" Left="9.45" Top="115" Width="698.75" Border.Color="DimGray" Border.Width="2"/>
+      <TextObject Name="Text11" Left="9.45" Top="130" Width="94.5" Height="20" Text="Khách hàng:" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="txtTenKhachHang" Left="100" Top="130" Width="260" Height="20" Text="[TenKhachHang]" Font="Arial, 10pt"/>
+      <TextObject Name="lblSoDienThoaiKhach" Left="378" Top="130" Width="103.95" Height="20" Text="Số điện thoại:" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="txtSoDienThoaiKhach" Left="480" Top="130" Width="200" Height="20" Text="[SoDienThoai]" Font="Arial, 10pt"/>
+      <TextObject Name="lblDiaChiKhach" Left="9.45" Top="155" Width="94.5" Height="20" Text="Địa Chỉ:" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text13" Left="100" Top="155" Width="600" Height="20" Text="[DiaChi]" Font="Arial, 10pt"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="224" Width="718.2" Height="30" Fill.Color="LightGray">
+      <TextObject Name="hSTT" Width="40" Height="30" Border.Lines="All" Text="STT" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="hTen" Left="40" Width="180" Height="30" Border.Lines="All" Text="Tên Sản Phẩm" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="hMau" Left="220" Width="70" Height="30" Border.Lines="All" Text="Màu Sắc" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="hSize" Left="290" Width="50" Height="30" Border.Lines="All" Text="Size" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="hSL" Left="340" Width="40" Height="30" Border.Lines="All" Text="SL" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="hGia" Left="380" Width="100" Height="30" Border.Lines="All" Text="Đơn Giá" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="hGiam" Left="480" Width="90" Height="30" Border.Lines="All" Text="Giảm Giá" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="hThanh" Left="570" Width="148.2" Height="30" Border.Lines="All" Text="Thành Tiền" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+    </PageHeaderBand>
+    <DataBand Name="Data1" Top="258" Width="718.2" Height="30" DataSource="Data">
+      <TextObject Name="dSTT" Width="40" Height="30" Border.Lines="All" Text="[Data.STT]" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="dTen" Left="40" Width="180" Height="30" Border.Lines="All" Text="[Data.TenSP]" VertAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="dMau" Left="220" Width="70" Height="30" Border.Lines="All" Text="[Data.MauSac]" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="dSize" Left="290" Width="50" Height="30" Border.Lines="All" Text="[Data.Size]" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="dSL" Left="340" Width="40" Height="30" Border.Lines="All" Text="[Data.SoLuong]" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="dGia" Left="380" Width="100" Height="30" Border.Lines="All" Text="[Data.Gia]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="0" HorzAlign="Right" VertAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="dGiam" Left="480" Width="90" Height="30" Border.Lines="All" Text="[Data.GiamGia]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="0" HorzAlign="Right" VertAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="dThanh" Left="570" Width="148.2" Height="30" Border.Lines="All" Text="[Data.ThanhTien]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="0" HorzAlign="Right" VertAlign="Center" Font="Arial, 10pt"/>
+    </DataBand>
+    <ReportSummaryBand Name="ReportSummary1" Top="292" Width="718.2" Height="80">
+      <TextObject Name="lblTongTien" Left="380" Top="10" Width="180" Height="30" Text="TỔNG TIỀN:" HorzAlign="Right" VertAlign="Center" Font="Arial, 12pt, style=Bold"/>
+      <TextObject Name="txtTongTien" Left="560" Top="10" Width="158.2" Height="30" Text="[TongTien]" Format="Number" Format.UseLocale="false" Format.DecimalDigits="0" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="0" HorzAlign="Right" VertAlign="Center" Font="Arial, 14pt, style=Bold" TextFill.Color="Firebrick"/>
+      <TextObject Name="txtThanks" Top="50" Width="718.2" Height="20" Text="Cảm ơn quý khách! Hẹn gặp lại!" HorzAlign="Center" Font="Arial, 11pt, style=Italic"/>
+    </ReportSummaryBand>
+  </ReportPage>
+</Report>
