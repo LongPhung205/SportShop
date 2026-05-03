@@ -28,8 +28,6 @@
             this.cboSize = new System.Windows.Forms.ComboBox();
             this.lblColor = new System.Windows.Forms.Label();
             this.cboColor = new System.Windows.Forms.ComboBox();
-            this.lblSoLuong = new System.Windows.Forms.Label();
-            this.nmSoLuong = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
             this.btnChonAnh = new System.Windows.Forms.Button();
             this.btnThemBienThe = new System.Windows.Forms.Button();
@@ -57,7 +55,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvSanPham)).BeginInit();
             this.panelTop.SuspendLayout();
             this.grpVariant.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nmSoLuong)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picSanPham)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nmBasePrice)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBienThe)).BeginInit();
@@ -142,8 +139,6 @@
             this.grpVariant.Controls.Add(this.cboSize);
             this.grpVariant.Controls.Add(this.lblColor);
             this.grpVariant.Controls.Add(this.cboColor);
-            this.grpVariant.Controls.Add(this.lblSoLuong);
-            this.grpVariant.Controls.Add(this.nmSoLuong);
             this.grpVariant.Location = new System.Drawing.Point(10, 145);
             this.grpVariant.Name = "grpVariant";
             this.grpVariant.Size = new System.Drawing.Size(360, 80);
@@ -186,28 +181,6 @@
             this.cboColor.Name = "cboColor";
             this.cboColor.Size = new System.Drawing.Size(80, 29);
             this.cboColor.TabIndex = 3;
-            // 
-            // lblSoLuong
-            // 
-            this.lblSoLuong.AutoSize = true;
-            this.lblSoLuong.Location = new System.Drawing.Point(275, 35);
-            this.lblSoLuong.Name = "lblSoLuong";
-            this.lblSoLuong.Size = new System.Drawing.Size(30, 21);
-            this.lblSoLuong.TabIndex = 4;
-            this.lblSoLuong.Text = "SL:";
-            // 
-            // nmSoLuong
-            // 
-            this.nmSoLuong.Location = new System.Drawing.Point(305, 32);
-            this.nmSoLuong.Maximum = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            0});
-            this.nmSoLuong.Name = "nmSoLuong";
-            this.nmSoLuong.ReadOnly = true;
-            this.nmSoLuong.Size = new System.Drawing.Size(45, 29);
-            this.nmSoLuong.TabIndex = 5;
             // 
             // label5
             // 
@@ -482,7 +455,6 @@
             this.panelTop.PerformLayout();
             this.grpVariant.ResumeLayout(false);
             this.grpVariant.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nmSoLuong)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picSanPham)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nmBasePrice)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBienThe)).EndInit();
@@ -523,8 +495,6 @@
         private System.Windows.Forms.Label lblSize;
         private System.Windows.Forms.ComboBox cboColor;
         private System.Windows.Forms.Label lblColor;
-        private System.Windows.Forms.NumericUpDown nmSoLuong;
-        private System.Windows.Forms.Label lblSoLuong;
         private System.Windows.Forms.DataGridView dgvBienThe;
         private System.Windows.Forms.Label lblBienThe;
         private System.Windows.Forms.Timer timer1;

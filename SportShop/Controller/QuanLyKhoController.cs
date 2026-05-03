@@ -94,7 +94,7 @@ namespace SportShop.Controller
                 {
                     try
                     {
-                        // 1. Kiểm tra xem phiếu có tồn tại và đang ở trạng thái DRAFT không
+                        // 1. Kiểm tra xem phiếu có tồn tại và đang ở trạng thái DRAFT không (Không đổi)
                         const string sqlCheck = "SELECT Status FROM ImportOrder WHERE Id = @id";
                         string status = "";
                         using (var cmdCheck = new SqlCommand(sqlCheck, conn, trans))
@@ -108,9 +108,9 @@ namespace SportShop.Controller
                         if (status == "COMPLETED")
                             throw new Exception("Phiếu nhập này đã được hoàn tất trước đó!");
 
-                        // 2. Lấy danh sách chi tiết phiếu nhập
+                        // 2. Lấy danh sách chi tiết phiếu nhập (👉 Đã thêm ImportPrice vào câu SELECT)
                         List<ImportOrderDetail> details = new List<ImportOrderDetail>();
-                        const string sqlGetDetails = "SELECT ProductVariantId, Quantity FROM ImportOrderDetail WHERE ImportOrderId = @id";
+                        const string sqlGetDetails = "SELECT ProductVariantId, Quantity, ImportPrice FROM ImportOrderDetail WHERE ImportOrderId = @id";
                         using (var cmdGetDetails = new SqlCommand(sqlGetDetails, conn, trans))
                         {
                             cmdGetDetails.Parameters.Add(new SqlParameter("@id", SqlDbType.Int) { Value = importOrderId });
@@ -121,25 +121,37 @@ namespace SportShop.Controller
                                     details.Add(new ImportOrderDetail
                                     {
                                         ProductVariantId = Convert.ToInt32(reader["ProductVariantId"]),
-                                        Quantity = Convert.ToInt32(reader["Quantity"])
+                                        Quantity = Convert.ToInt32(reader["Quantity"]),
+                                        ImportPrice = Convert.ToDecimal(reader["ImportPrice"]) // 👉 Lấy thêm Giá nhập
                                     });
                                 }
                             }
                         }
 
-                        // 3. Tiến hành cập nhật tồn kho và ghi Log
+                        // 3. Tiến hành cập nhật tồn kho, TÍNH GIÁ VỐN và ghi Log
                         foreach (var item in details)
                         {
-                            // A. Cộng số lượng vào kho
-                            const string sqlUpdateStock = "UPDATE ProductVariant SET Quantity = Quantity + @qty WHERE Id = @pvid";
+                            // A. Cập nhật Giá Vốn Bình Quân (MAC) và Cộng số lượng vào kho
+                            const string sqlUpdateStock = @"
+                        UPDATE ProductVariant 
+                        SET 
+                            CostPrice = CASE 
+                                WHEN (Quantity + @qty) > 0 
+                                THEN ((Quantity * CostPrice) + (@qty * @price)) / (Quantity + @qty)
+                                ELSE @price 
+                            END,
+                            Quantity = Quantity + @qty 
+                        WHERE Id = @pvid";
+
                             using (var cmdStock = new SqlCommand(sqlUpdateStock, conn, trans))
                             {
                                 cmdStock.Parameters.Add(new SqlParameter("@qty", SqlDbType.Int) { Value = item.Quantity });
+                                cmdStock.Parameters.Add(new SqlParameter("@price", SqlDbType.Decimal) { Value = item.ImportPrice }); // 👉 Truyền giá nhập vào công thức
                                 cmdStock.Parameters.Add(new SqlParameter("@pvid", SqlDbType.Int) { Value = item.ProductVariantId });
                                 cmdStock.ExecuteNonQuery();
                             }
 
-                            // B. Ghi Log Tồn Kho
+                            // B. Ghi Log Tồn Kho (Không đổi)
                             const string sqlLog = "INSERT INTO InventoryLog (ProductVariantId, ChangeAmount, Type, ImportOrderId, UserId, Notes) VALUES (@pvid, @change, 'IMPORT', @iid, @uid, N'Chốt phiếu nhập hàng')";
                             using (var cmdLog = new SqlCommand(sqlLog, conn, trans))
                             {
@@ -151,7 +163,7 @@ namespace SportShop.Controller
                             }
                         }
 
-                        // 4. Chuyển trạng thái phiếu nhập thành COMPLETED
+                        // 4. Chuyển trạng thái phiếu nhập thành COMPLETED (Không đổi)
                         const string sqlComplete = "UPDATE ImportOrder SET Status = 'COMPLETED', ImportDate = GETDATE() WHERE Id = @id";
                         using (var cmdComplete = new SqlCommand(sqlComplete, conn, trans))
                         {
@@ -170,7 +182,6 @@ namespace SportShop.Controller
                 }
             }
         }
-
         // Xóa phiếu nhập (CHỈ CHO PHÉP XÓA KHI ĐANG LÀ DRAFT)
         public bool DeleteImportOrder(int importOrderId)
         {

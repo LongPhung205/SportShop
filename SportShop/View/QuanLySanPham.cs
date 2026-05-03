@@ -309,13 +309,13 @@ namespace SportShop.View
                     if (firstVariantRow.Cells["ColorId"].Value != DBNull.Value)
                         cboColor.SelectedValue = Convert.ToInt32(firstVariantRow.Cells["ColorId"].Value);
 
-                    nmSoLuong.Value = Convert.ToInt32(firstVariantRow.Cells["Quantity"].Value ?? 0);
+                    
                 }
                 else
                 {
                     cboSize.SelectedIndex = -1;
                     cboColor.SelectedIndex = -1;
-                    nmSoLuong.Value = 0;
+                    
                 }
             }
             catch (Exception ex)
@@ -347,7 +347,7 @@ namespace SportShop.View
                 if (row.Cells["ColorId"].Value != DBNull.Value)
                     cboColor.SelectedValue = Convert.ToInt32(row.Cells["ColorId"].Value);
 
-                nmSoLuong.Value = Convert.ToInt32(row.Cells["Quantity"].Value ?? 0);
+               
             }
             catch { }
         }
@@ -374,7 +374,7 @@ namespace SportShop.View
                     SKU = txtSKU.Text.Trim().ToUpper(),
                     SizeId = (int)cboSize.SelectedValue,
                     ColorId = (int)cboColor.SelectedValue,
-                    Quantity = (int)nmSoLuong.Value,
+                    
                     SellingPrice = nmBasePrice.Value,
                     CostPrice = nmBasePrice.Value * 0.7m,
                     IsActive = chkIsActive.Checked
@@ -519,7 +519,7 @@ namespace SportShop.View
                     ProductId = product.Id, // ID đã được Controller trả về
                     SizeId = (int)cboSize.SelectedValue,
                     ColorId = (int)cboColor.SelectedValue,
-                    Quantity = (int)nmSoLuong.Value,
+                   
                     SellingPrice = nmBasePrice.Value,
                     CostPrice = nmBasePrice.Value * 0.7m,
                     IsActive = true
@@ -558,7 +558,7 @@ namespace SportShop.View
                 ProductId = productId,
                 SizeId = (int)cboSize.SelectedValue,
                 ColorId = (int)cboColor.SelectedValue,
-                Quantity = (int)nmSoLuong.Value,
+              
                 SellingPrice = nmBasePrice.Value,
                 CostPrice = nmBasePrice.Value * 0.7m,
                 IsActive = true
@@ -593,7 +593,7 @@ namespace SportShop.View
             cboSize.SelectedIndex = -1;
             cboColor.SelectedIndex = -1;
 
-            nmSoLuong.Value = 0;
+           
             nmBasePrice.Value = 0;
             chkIsActive.Checked = true;
 

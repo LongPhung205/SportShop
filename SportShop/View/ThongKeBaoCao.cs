@@ -42,8 +42,8 @@ namespace SportShop.View
             dtpDenNgay.Value = DateTime.Now;
 
             // Nhãn chuẩn Kế toán
-            label1.Text = "DOANH THU THUẦN";
-            label3.Text = "GIÁ VỐN & CHI PHÍ";
+            label1.Text = "TỔNG DOANH THU ";
+            label3.Text = "GIÁ VỐN VÀ CHI PHÍ";
             label5.Text = "LỢI NHUẬN RÒNG (NET PROFIT)";
 
             LoadDashboardData();

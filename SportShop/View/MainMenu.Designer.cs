@@ -19,17 +19,8 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panelLeft = new System.Windows.Forms.Panel();
-            this.btnQuanLyKho = new System.Windows.Forms.Button();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.panelTop = new System.Windows.Forms.Panel();
-            this.btnDangNhap = new System.Windows.Forms.Button();
-            this.lblPageTitle = new System.Windows.Forms.Label();
-            this.panelTopBorder = new System.Windows.Forms.Panel();
-            this.panelMain = new System.Windows.Forms.Panel();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.zToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnDiemDanh = new System.Windows.Forms.Button();
+            this.btnQuanLyKho = new System.Windows.Forms.Button();
             this.btnThongKeBaoCao = new System.Windows.Forms.Button();
             this.btnQuanLyNhanVien = new System.Windows.Forms.Button();
             this.btnQuanLyKhachHang = new System.Windows.Forms.Button();
@@ -38,12 +29,21 @@
             this.btnQuanLySanPham = new System.Windows.Forms.Button();
             this.btnQuanLyHoaDon = new System.Windows.Forms.Button();
             this.btnTrangchu = new System.Windows.Forms.Button();
+            this.panel3 = new System.Windows.Forms.Panel();
             this.picLogo = new System.Windows.Forms.PictureBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.panelTop = new System.Windows.Forms.Panel();
+            this.btnDangNhap = new System.Windows.Forms.Button();
+            this.lblPageTitle = new System.Windows.Forms.Label();
+            this.panelTopBorder = new System.Windows.Forms.Panel();
+            this.panelMain = new System.Windows.Forms.Panel();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.zToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelLeft.SuspendLayout();
             this.panel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
             this.panelTop.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
             this.SuspendLayout();
             // 
             // panelLeft
@@ -66,9 +66,28 @@
             this.panelLeft.Size = new System.Drawing.Size(269, 787);
             this.panelLeft.TabIndex = 0;
             // 
+            // btnDiemDanh
+            // 
+            this.btnDiemDanh.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnDiemDanh.FlatAppearance.BorderSize = 0;
+            this.btnDiemDanh.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(45)))));
+            this.btnDiemDanh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDiemDanh.Font = new System.Drawing.Font("Segoe UI", 10.5F);
+            this.btnDiemDanh.ForeColor = System.Drawing.Color.Gainsboro;
+            this.btnDiemDanh.Image = global::SportShop.Properties.Resources.event_available_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24;
+            this.btnDiemDanh.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnDiemDanh.Location = new System.Drawing.Point(0, 185);
+            this.btnDiemDanh.Name = "btnDiemDanh";
+            this.btnDiemDanh.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.btnDiemDanh.Size = new System.Drawing.Size(269, 55);
+            this.btnDiemDanh.TabIndex = 10;
+            this.btnDiemDanh.Text = "Điểm Danh";
+            this.btnDiemDanh.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnDiemDanh.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnDiemDanh.Click += new System.EventHandler(this.btnDiemDanh_Click);
+            // 
             // btnQuanLyKho
             // 
-            this.btnQuanLyKho.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnQuanLyKho.FlatAppearance.BorderSize = 0;
             this.btnQuanLyKho.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(45)))));
             this.btnQuanLyKho.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -76,7 +95,7 @@
             this.btnQuanLyKho.ForeColor = System.Drawing.Color.Gainsboro;
             this.btnQuanLyKho.Image = global::SportShop.Properties.Resources.inventory_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24;
             this.btnQuanLyKho.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnQuanLyKho.Location = new System.Drawing.Point(0, 515);
+            this.btnQuanLyKho.Location = new System.Drawing.Point(0, 466);
             this.btnQuanLyKho.Name = "btnQuanLyKho";
             this.btnQuanLyKho.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
             this.btnQuanLyKho.Size = new System.Drawing.Size(269, 55);
@@ -85,6 +104,160 @@
             this.btnQuanLyKho.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnQuanLyKho.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnQuanLyKho.Click += new System.EventHandler(this.btnQuanLyKho_Click);
+            // 
+            // btnThongKeBaoCao
+            // 
+            this.btnThongKeBaoCao.FlatAppearance.BorderSize = 0;
+            this.btnThongKeBaoCao.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(45)))));
+            this.btnThongKeBaoCao.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnThongKeBaoCao.Font = new System.Drawing.Font("Segoe UI", 10.5F);
+            this.btnThongKeBaoCao.ForeColor = System.Drawing.Color.Gainsboro;
+            this.btnThongKeBaoCao.Image = global::SportShop.Properties.Resources.add_chart_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24;
+            this.btnThongKeBaoCao.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnThongKeBaoCao.Location = new System.Drawing.Point(3, 582);
+            this.btnThongKeBaoCao.Name = "btnThongKeBaoCao";
+            this.btnThongKeBaoCao.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.btnThongKeBaoCao.Size = new System.Drawing.Size(269, 55);
+            this.btnThongKeBaoCao.TabIndex = 2;
+            this.btnThongKeBaoCao.Text = "  Thống Kê Báo Cáo";
+            this.btnThongKeBaoCao.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnThongKeBaoCao.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnThongKeBaoCao.Click += new System.EventHandler(this.btnThongKeBaoCao_Click);
+            // 
+            // btnQuanLyNhanVien
+            // 
+            this.btnQuanLyNhanVien.FlatAppearance.BorderSize = 0;
+            this.btnQuanLyNhanVien.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(45)))));
+            this.btnQuanLyNhanVien.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnQuanLyNhanVien.Font = new System.Drawing.Font("Segoe UI", 10.5F);
+            this.btnQuanLyNhanVien.ForeColor = System.Drawing.Color.Gainsboro;
+            this.btnQuanLyNhanVien.Image = global::SportShop.Properties.Resources.group_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24__1_;
+            this.btnQuanLyNhanVien.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnQuanLyNhanVien.Location = new System.Drawing.Point(0, 405);
+            this.btnQuanLyNhanVien.Name = "btnQuanLyNhanVien";
+            this.btnQuanLyNhanVien.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.btnQuanLyNhanVien.Size = new System.Drawing.Size(269, 55);
+            this.btnQuanLyNhanVien.TabIndex = 4;
+            this.btnQuanLyNhanVien.Text = "  Nhân Viên";
+            this.btnQuanLyNhanVien.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnQuanLyNhanVien.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnQuanLyNhanVien.Click += new System.EventHandler(this.btnQuanLyNhanVien_Click);
+            // 
+            // btnQuanLyKhachHang
+            // 
+            this.btnQuanLyKhachHang.FlatAppearance.BorderSize = 0;
+            this.btnQuanLyKhachHang.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(45)))));
+            this.btnQuanLyKhachHang.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnQuanLyKhachHang.Font = new System.Drawing.Font("Segoe UI", 10.5F);
+            this.btnQuanLyKhachHang.ForeColor = System.Drawing.Color.Gainsboro;
+            this.btnQuanLyKhachHang.Image = global::SportShop.Properties.Resources.sentiment_extremely_dissatisfied_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24;
+            this.btnQuanLyKhachHang.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnQuanLyKhachHang.Location = new System.Drawing.Point(0, 350);
+            this.btnQuanLyKhachHang.Name = "btnQuanLyKhachHang";
+            this.btnQuanLyKhachHang.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.btnQuanLyKhachHang.Size = new System.Drawing.Size(269, 55);
+            this.btnQuanLyKhachHang.TabIndex = 5;
+            this.btnQuanLyKhachHang.Text = "  Khách Hàng";
+            this.btnQuanLyKhachHang.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnQuanLyKhachHang.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnQuanLyKhachHang.Click += new System.EventHandler(this.btnQuanLyKhachHang_Click);
+            // 
+            // button1
+            // 
+            this.button1.FlatAppearance.BorderSize = 0;
+            this.button1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(45)))));
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.Font = new System.Drawing.Font("Segoe UI", 10.5F);
+            this.button1.ForeColor = System.Drawing.Color.Gainsboro;
+            this.button1.Image = global::SportShop.Properties.Resources.redeem_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24;
+            this.button1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.button1.Location = new System.Drawing.Point(0, 295);
+            this.button1.Name = "button1";
+            this.button1.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.button1.Size = new System.Drawing.Size(269, 55);
+            this.button1.TabIndex = 0;
+            this.button1.Text = "  Khuyến Mãi (Voucher)";
+            this.button1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.button1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // btnLoaiSP
+            // 
+            this.btnLoaiSP.FlatAppearance.BorderSize = 0;
+            this.btnLoaiSP.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(45)))));
+            this.btnLoaiSP.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnLoaiSP.Font = new System.Drawing.Font("Segoe UI", 10.5F);
+            this.btnLoaiSP.ForeColor = System.Drawing.Color.Gainsboro;
+            this.btnLoaiSP.Image = global::SportShop.Properties.Resources.category_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24;
+            this.btnLoaiSP.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnLoaiSP.Location = new System.Drawing.Point(0, 240);
+            this.btnLoaiSP.Name = "btnLoaiSP";
+            this.btnLoaiSP.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.btnLoaiSP.Size = new System.Drawing.Size(269, 55);
+            this.btnLoaiSP.TabIndex = 1;
+            this.btnLoaiSP.Text = "  Loại Sản Phẩm";
+            this.btnLoaiSP.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnLoaiSP.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnLoaiSP.Click += new System.EventHandler(this.btnLoaiSP_Click);
+            // 
+            // btnQuanLySanPham
+            // 
+            this.btnQuanLySanPham.FlatAppearance.BorderSize = 0;
+            this.btnQuanLySanPham.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(45)))));
+            this.btnQuanLySanPham.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnQuanLySanPham.Font = new System.Drawing.Font("Segoe UI", 10.5F);
+            this.btnQuanLySanPham.ForeColor = System.Drawing.Color.Gainsboro;
+            this.btnQuanLySanPham.Image = global::SportShop.Properties.Resources.package_2_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24__1_;
+            this.btnQuanLySanPham.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnQuanLySanPham.Location = new System.Drawing.Point(3, 521);
+            this.btnQuanLySanPham.Name = "btnQuanLySanPham";
+            this.btnQuanLySanPham.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.btnQuanLySanPham.Size = new System.Drawing.Size(269, 55);
+            this.btnQuanLySanPham.TabIndex = 7;
+            this.btnQuanLySanPham.Text = "  Sản Phẩm";
+            this.btnQuanLySanPham.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnQuanLySanPham.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnQuanLySanPham.Click += new System.EventHandler(this.btnQuanLySanPham_Click_1);
+            // 
+            // btnQuanLyHoaDon
+            // 
+            this.btnQuanLyHoaDon.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnQuanLyHoaDon.FlatAppearance.BorderSize = 0;
+            this.btnQuanLyHoaDon.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(45)))));
+            this.btnQuanLyHoaDon.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnQuanLyHoaDon.Font = new System.Drawing.Font("Segoe UI", 10.5F);
+            this.btnQuanLyHoaDon.ForeColor = System.Drawing.Color.Gainsboro;
+            this.btnQuanLyHoaDon.Image = global::SportShop.Properties.Resources.shopping_bag_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24__1_;
+            this.btnQuanLyHoaDon.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnQuanLyHoaDon.Location = new System.Drawing.Point(0, 130);
+            this.btnQuanLyHoaDon.Name = "btnQuanLyHoaDon";
+            this.btnQuanLyHoaDon.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.btnQuanLyHoaDon.Size = new System.Drawing.Size(269, 55);
+            this.btnQuanLyHoaDon.TabIndex = 6;
+            this.btnQuanLyHoaDon.Text = "  Hóa Đơn / Bán Hàng";
+            this.btnQuanLyHoaDon.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnQuanLyHoaDon.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnQuanLyHoaDon.Click += new System.EventHandler(this.btnQuanLyHoaDon_Click);
+            // 
+            // btnTrangchu
+            // 
+            this.btnTrangchu.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnTrangchu.FlatAppearance.BorderSize = 0;
+            this.btnTrangchu.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(45)))));
+            this.btnTrangchu.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnTrangchu.Font = new System.Drawing.Font("Segoe UI", 10.5F);
+            this.btnTrangchu.ForeColor = System.Drawing.Color.Gainsboro;
+            this.btnTrangchu.Image = global::SportShop.Properties.Resources.home_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24;
+            this.btnTrangchu.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnTrangchu.Location = new System.Drawing.Point(0, 75);
+            this.btnTrangchu.Name = "btnTrangchu";
+            this.btnTrangchu.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.btnTrangchu.Size = new System.Drawing.Size(269, 55);
+            this.btnTrangchu.TabIndex = 8;
+            this.btnTrangchu.Text = "  Trang Chủ";
+            this.btnTrangchu.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnTrangchu.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnTrangchu.Click += new System.EventHandler(this.btnTrangchu_Click);
             // 
             // panel3
             // 
@@ -96,6 +269,15 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(269, 75);
             this.panel3.TabIndex = 2;
+            // 
+            // picLogo
+            // 
+            this.picLogo.Location = new System.Drawing.Point(12, 12);
+            this.picLogo.Name = "picLogo";
+            this.picLogo.Size = new System.Drawing.Size(63, 52);
+            this.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picLogo.TabIndex = 1;
+            this.picLogo.TabStop = false;
             // 
             // label1
             // 
@@ -182,195 +364,6 @@
             this.zToolStripMenuItem.Size = new System.Drawing.Size(85, 24);
             this.zToolStripMenuItem.Text = "z";
             // 
-            // btnDiemDanh
-            // 
-            this.btnDiemDanh.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnDiemDanh.FlatAppearance.BorderSize = 0;
-            this.btnDiemDanh.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(45)))));
-            this.btnDiemDanh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDiemDanh.Font = new System.Drawing.Font("Segoe UI", 10.5F);
-            this.btnDiemDanh.ForeColor = System.Drawing.Color.Gainsboro;
-            this.btnDiemDanh.Image = global::SportShop.Properties.Resources.event_available_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24;
-            this.btnDiemDanh.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnDiemDanh.Location = new System.Drawing.Point(0, 570);
-            this.btnDiemDanh.Name = "btnDiemDanh";
-            this.btnDiemDanh.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            this.btnDiemDanh.Size = new System.Drawing.Size(269, 55);
-            this.btnDiemDanh.TabIndex = 10;
-            this.btnDiemDanh.Text = "Điểm Danh";
-            this.btnDiemDanh.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnDiemDanh.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnDiemDanh.Click += new System.EventHandler(this.btnDiemDanh_Click);
-            // 
-            // btnThongKeBaoCao
-            // 
-            this.btnThongKeBaoCao.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnThongKeBaoCao.FlatAppearance.BorderSize = 0;
-            this.btnThongKeBaoCao.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(45)))));
-            this.btnThongKeBaoCao.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnThongKeBaoCao.Font = new System.Drawing.Font("Segoe UI", 10.5F);
-            this.btnThongKeBaoCao.ForeColor = System.Drawing.Color.Gainsboro;
-            this.btnThongKeBaoCao.Image = global::SportShop.Properties.Resources.add_chart_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24;
-            this.btnThongKeBaoCao.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnThongKeBaoCao.Location = new System.Drawing.Point(0, 460);
-            this.btnThongKeBaoCao.Name = "btnThongKeBaoCao";
-            this.btnThongKeBaoCao.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            this.btnThongKeBaoCao.Size = new System.Drawing.Size(269, 55);
-            this.btnThongKeBaoCao.TabIndex = 2;
-            this.btnThongKeBaoCao.Text = "  Thống Kê Báo Cáo";
-            this.btnThongKeBaoCao.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnThongKeBaoCao.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnThongKeBaoCao.Click += new System.EventHandler(this.btnThongKeBaoCao_Click);
-            // 
-            // btnQuanLyNhanVien
-            // 
-            this.btnQuanLyNhanVien.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnQuanLyNhanVien.FlatAppearance.BorderSize = 0;
-            this.btnQuanLyNhanVien.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(45)))));
-            this.btnQuanLyNhanVien.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnQuanLyNhanVien.Font = new System.Drawing.Font("Segoe UI", 10.5F);
-            this.btnQuanLyNhanVien.ForeColor = System.Drawing.Color.Gainsboro;
-            this.btnQuanLyNhanVien.Image = global::SportShop.Properties.Resources.group_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24__1_;
-            this.btnQuanLyNhanVien.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnQuanLyNhanVien.Location = new System.Drawing.Point(0, 405);
-            this.btnQuanLyNhanVien.Name = "btnQuanLyNhanVien";
-            this.btnQuanLyNhanVien.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            this.btnQuanLyNhanVien.Size = new System.Drawing.Size(269, 55);
-            this.btnQuanLyNhanVien.TabIndex = 4;
-            this.btnQuanLyNhanVien.Text = "  Nhân Viên";
-            this.btnQuanLyNhanVien.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnQuanLyNhanVien.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnQuanLyNhanVien.Click += new System.EventHandler(this.btnQuanLyNhanVien_Click);
-            // 
-            // btnQuanLyKhachHang
-            // 
-            this.btnQuanLyKhachHang.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnQuanLyKhachHang.FlatAppearance.BorderSize = 0;
-            this.btnQuanLyKhachHang.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(45)))));
-            this.btnQuanLyKhachHang.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnQuanLyKhachHang.Font = new System.Drawing.Font("Segoe UI", 10.5F);
-            this.btnQuanLyKhachHang.ForeColor = System.Drawing.Color.Gainsboro;
-            this.btnQuanLyKhachHang.Image = global::SportShop.Properties.Resources.sentiment_extremely_dissatisfied_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24;
-            this.btnQuanLyKhachHang.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnQuanLyKhachHang.Location = new System.Drawing.Point(0, 350);
-            this.btnQuanLyKhachHang.Name = "btnQuanLyKhachHang";
-            this.btnQuanLyKhachHang.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            this.btnQuanLyKhachHang.Size = new System.Drawing.Size(269, 55);
-            this.btnQuanLyKhachHang.TabIndex = 5;
-            this.btnQuanLyKhachHang.Text = "  Khách Hàng";
-            this.btnQuanLyKhachHang.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnQuanLyKhachHang.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnQuanLyKhachHang.Click += new System.EventHandler(this.btnQuanLyKhachHang_Click);
-            // 
-            // button1
-            // 
-            this.button1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.button1.FlatAppearance.BorderSize = 0;
-            this.button1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(45)))));
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Font = new System.Drawing.Font("Segoe UI", 10.5F);
-            this.button1.ForeColor = System.Drawing.Color.Gainsboro;
-            this.button1.Image = global::SportShop.Properties.Resources.redeem_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24;
-            this.button1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.button1.Location = new System.Drawing.Point(0, 295);
-            this.button1.Name = "button1";
-            this.button1.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            this.button1.Size = new System.Drawing.Size(269, 55);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "  Khuyến Mãi (Voucher)";
-            this.button1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.button1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // btnLoaiSP
-            // 
-            this.btnLoaiSP.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnLoaiSP.FlatAppearance.BorderSize = 0;
-            this.btnLoaiSP.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(45)))));
-            this.btnLoaiSP.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnLoaiSP.Font = new System.Drawing.Font("Segoe UI", 10.5F);
-            this.btnLoaiSP.ForeColor = System.Drawing.Color.Gainsboro;
-            this.btnLoaiSP.Image = global::SportShop.Properties.Resources.category_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24;
-            this.btnLoaiSP.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnLoaiSP.Location = new System.Drawing.Point(0, 240);
-            this.btnLoaiSP.Name = "btnLoaiSP";
-            this.btnLoaiSP.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            this.btnLoaiSP.Size = new System.Drawing.Size(269, 55);
-            this.btnLoaiSP.TabIndex = 1;
-            this.btnLoaiSP.Text = "  Loại Sản Phẩm";
-            this.btnLoaiSP.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnLoaiSP.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnLoaiSP.Click += new System.EventHandler(this.btnLoaiSP_Click);
-            // 
-            // btnQuanLySanPham
-            // 
-            this.btnQuanLySanPham.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnQuanLySanPham.FlatAppearance.BorderSize = 0;
-            this.btnQuanLySanPham.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(45)))));
-            this.btnQuanLySanPham.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnQuanLySanPham.Font = new System.Drawing.Font("Segoe UI", 10.5F);
-            this.btnQuanLySanPham.ForeColor = System.Drawing.Color.Gainsboro;
-            this.btnQuanLySanPham.Image = global::SportShop.Properties.Resources.package_2_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24__1_;
-            this.btnQuanLySanPham.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnQuanLySanPham.Location = new System.Drawing.Point(0, 185);
-            this.btnQuanLySanPham.Name = "btnQuanLySanPham";
-            this.btnQuanLySanPham.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            this.btnQuanLySanPham.Size = new System.Drawing.Size(269, 55);
-            this.btnQuanLySanPham.TabIndex = 7;
-            this.btnQuanLySanPham.Text = "  Sản Phẩm";
-            this.btnQuanLySanPham.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnQuanLySanPham.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnQuanLySanPham.Click += new System.EventHandler(this.btnQuanLySanPham_Click_1);
-            // 
-            // btnQuanLyHoaDon
-            // 
-            this.btnQuanLyHoaDon.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnQuanLyHoaDon.FlatAppearance.BorderSize = 0;
-            this.btnQuanLyHoaDon.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(45)))));
-            this.btnQuanLyHoaDon.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnQuanLyHoaDon.Font = new System.Drawing.Font("Segoe UI", 10.5F);
-            this.btnQuanLyHoaDon.ForeColor = System.Drawing.Color.Gainsboro;
-            this.btnQuanLyHoaDon.Image = global::SportShop.Properties.Resources.shopping_bag_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24__1_;
-            this.btnQuanLyHoaDon.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnQuanLyHoaDon.Location = new System.Drawing.Point(0, 130);
-            this.btnQuanLyHoaDon.Name = "btnQuanLyHoaDon";
-            this.btnQuanLyHoaDon.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            this.btnQuanLyHoaDon.Size = new System.Drawing.Size(269, 55);
-            this.btnQuanLyHoaDon.TabIndex = 6;
-            this.btnQuanLyHoaDon.Text = "  Hóa Đơn / Bán Hàng";
-            this.btnQuanLyHoaDon.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnQuanLyHoaDon.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnQuanLyHoaDon.Click += new System.EventHandler(this.btnQuanLyHoaDon_Click);
-            // 
-            // btnTrangchu
-            // 
-            this.btnTrangchu.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnTrangchu.FlatAppearance.BorderSize = 0;
-            this.btnTrangchu.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(45)))));
-            this.btnTrangchu.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnTrangchu.Font = new System.Drawing.Font("Segoe UI", 10.5F);
-            this.btnTrangchu.ForeColor = System.Drawing.Color.Gainsboro;
-            this.btnTrangchu.Image = global::SportShop.Properties.Resources.home_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24;
-            this.btnTrangchu.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnTrangchu.Location = new System.Drawing.Point(0, 75);
-            this.btnTrangchu.Name = "btnTrangchu";
-            this.btnTrangchu.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            this.btnTrangchu.Size = new System.Drawing.Size(269, 55);
-            this.btnTrangchu.TabIndex = 8;
-            this.btnTrangchu.Text = "  Trang Chủ";
-            this.btnTrangchu.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnTrangchu.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnTrangchu.Click += new System.EventHandler(this.btnTrangchu_Click);
-            // 
-            // picLogo
-            // 
-            this.picLogo.Location = new System.Drawing.Point(12, 12);
-            this.picLogo.Name = "picLogo";
-            this.picLogo.Size = new System.Drawing.Size(63, 52);
-            this.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.picLogo.TabIndex = 1;
-            this.picLogo.TabStop = false;
-            // 
             // MainMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -386,10 +379,10 @@
             this.panelLeft.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).EndInit();
             this.panelTop.ResumeLayout(false);
             this.panelTop.PerformLayout();
             this.contextMenuStrip1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).EndInit();
             this.ResumeLayout(false);
 
         }

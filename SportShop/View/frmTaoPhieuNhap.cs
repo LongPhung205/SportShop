@@ -38,12 +38,16 @@ namespace SportShop.View
         {
             try
             {
-                // Truy vấn trực tiếp lấy NCC đang hoạt động để tránh thiếu Controller
                 DataTable dt = DBConnection.GetDataTable("SELECT Id, Name FROM Supplier WHERE IsActive = 1");
                 cboNhaCungCap.DataSource = dt;
                 cboNhaCungCap.DisplayMember = "Name";
                 cboNhaCungCap.ValueMember = "Id";
                 cboNhaCungCap.SelectedIndex = -1;
+
+                // 👉 CẤU HÌNH COMBOBOX: Cho phép gõ text tự do vào
+                cboNhaCungCap.DropDownStyle = ComboBoxStyle.DropDown;
+                cboNhaCungCap.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+                cboNhaCungCap.AutoCompleteSource = AutoCompleteSource.ListItems;
             }
             catch { }
         }
@@ -166,9 +170,11 @@ namespace SportShop.View
         // 6. NÚT: LƯU NHÁP PHIẾU NHẬP
         private void btnLuuNhap_Click(object sender, EventArgs e)
         {
-            if (cboNhaCungCap.SelectedValue == null)
+            string tenNCC = cboNhaCungCap.Text.Trim();
+
+            if (string.IsNullOrEmpty(tenNCC))
             {
-                MessageBox.Show("Vui lòng chọn Nhà cung cấp!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Vui lòng chọn hoặc nhập tên Nhà cung cấp!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -178,15 +184,40 @@ namespace SportShop.View
                 return;
             }
 
+            int supplierId = 0;
+
+            // XỬ LÝ NHÀ CUNG CẤP: Kiểm tra xem người dùng chọn trong list hay gõ tên mới
+            if (cboNhaCungCap.SelectedValue != null && cboNhaCungCap.SelectedValue is int)
+            {
+                // Trường hợp 1: Chọn một NCC đã có trong danh sách xổ xuống
+                supplierId = (int)cboNhaCungCap.SelectedValue;
+            }
+            else
+            {
+                // Trường hợp 2: Gõ một tên hoàn toàn mới -> Tự động Insert vào CSDL và lấy ID
+                string sqlInsertNCC = "INSERT INTO Supplier (Name, IsActive, CreatedAt) OUTPUT INSERTED.Id VALUES (@name, 1, GETDATE())";
+                using (var conn = DBConnection.GetDBConnection())
+                {
+                    conn.Open();
+                    using (var cmd = new System.Data.SqlClient.SqlCommand(sqlInsertNCC, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@name", tenNCC);
+                        supplierId = (int)cmd.ExecuteScalar();
+                    }
+                }
+            }
+
+            // TẠO OBJECT PHIẾU NHẬP VỚI ID NHÀ CUNG CẤP (CŨ HOẶC MỚI)
             var order = new ImportOrder
             {
-                SupplierId = Convert.ToInt32(cboNhaCungCap.SelectedValue),
+                SupplierId = supplierId,
                 UserId = UserSession.CurrentUser != null ? UserSession.CurrentUser.Id : 1, // Lấy người đang đăng nhập
                 ImportDate = DateTime.Now,
                 TotalAmount = _cart.Sum(x => x.Quantity * x.ImportPrice),
                 Notes = txtGhiChu.Text.Trim()
             };
 
+            // LƯU PHIẾU
             if (_khoController.SaveDraftImportOrder(order, _cart.ToList()))
             {
                 MessageBox.Show("Đã lưu Phiếu Nhập Nháp thành công!\nPhiếu này hiện chưa cộng vào Tồn kho cho đến khi được duyệt.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -198,7 +229,6 @@ namespace SportShop.View
                 MessageBox.Show("Lỗi khi lưu phiếu nhập. Vui lòng thử lại!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
         private void btnHuy_Click(object sender, EventArgs e)
         {
             this.Close();

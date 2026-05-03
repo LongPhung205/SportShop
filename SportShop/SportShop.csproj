@@ -235,6 +235,9 @@
     <EmbeddedResource Include="View\QuanLyHoaDon.resx">
       <DependentUpon>QuanLyHoaDon.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="View\QuanLyKho.resx">
+      <DependentUpon>QuanLyKho.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="View\QuanLyLoaiSanPham.resx">
       <DependentUpon>QuanLyLoaiSanPham.cs</DependentUpon>
     </EmbeddedResource>

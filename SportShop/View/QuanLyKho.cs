@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace SportShop.View
 {
@@ -36,11 +37,20 @@ namespace SportShop.View
         // ========================================================
         // TAB 1: XEM TỒN KHO HIỆN TẠI
         // ========================================================
+        // ========================================================
+        // TAB 1: XEM TỒN KHO HIỆN TẠI
+        // ========================================================
         public void LoadDataTonKho()
         {
             try
             {
-                dgvKho.DataSource = _productController.GetAllProductVariants();
+                var listKho = _productController.GetAllProductVariants();
+                if (listKho != null)
+                {
+                    // 👉 Dùng LINQ để lọc: Chỉ lấy những biến thể có Số lượng > 0
+                    var filteredList = listKho.Where(x => x.Quantity > 0).ToList();
+                    dgvKho.DataSource = filteredList;
+                }
                 CustomGridViewTonKho();
             }
             catch (Exception ex)
@@ -52,7 +62,7 @@ namespace SportShop.View
         private void CustomGridViewTonKho()
         {
             // 1. Ẩn tất cả ID thừa và CẢ 2 cột Size/Color rời rạc (vì ta sẽ gộp nó vào Tên)
-            string[] colsToHide = { "Id", "ProductId", "SizeId", "ColorId", "Product", "Size", "Color", "ImportPrice", "Image", "SizeName", "ColorName" };
+            string[] colsToHide = { "Id", "ProductId", "SizeId", "ColorId", "Product", "Size", "Color", "ImportPrice", "Image", "SizeName", "ColorName","FullDisplayName"};
             foreach (string col in colsToHide)
             {
                 if (dgvKho.Columns[col] != null) dgvKho.Columns[col].Visible = false;
@@ -109,7 +119,14 @@ namespace SportShop.View
             try
             {
                 string keyword = txtTimKiem.Text.Trim();
-                dgvKho.DataSource = _productController.SearchVariants(keyword);
+                var listTimKiem = _productController.SearchVariants(keyword);
+
+                if (listTimKiem != null)
+                {
+                    // 👉 Vẫn phải giữ bộ lọc chặn hàng ảo khi tìm kiếm
+                    var filteredList = listTimKiem.Where(x => x.Quantity > 0).ToList();
+                    dgvKho.DataSource = filteredList;
+                }
             }
             catch { }
         }
