@@ -166,7 +166,7 @@
             // 
             // pictureBox3
             // 
-            
+            this.pictureBox3.Image = global::SportShop.Properties.Resources.logoLock;
             this.pictureBox3.Location = new System.Drawing.Point(98, 362);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Padding = new System.Windows.Forms.Padding(3);
@@ -177,7 +177,7 @@
             // 
             // pictureBox2
             // 
-            
+            this.pictureBox2.Image = global::SportShop.Properties.Resources.logoUser;
             this.pictureBox2.Location = new System.Drawing.Point(98, 293);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Padding = new System.Windows.Forms.Padding(3);
@@ -188,7 +188,7 @@
             // 
             // pictureBox1
             // 
-            // Nếu bạn có logo chính ở đây, thay thế null bằng đường dẫn file Properties tương tự ở trên.
+            this.pictureBox1.Image = global::SportShop.Properties.Resources.logoMANAGER;
             this.pictureBox1.Location = new System.Drawing.Point(122, 58);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(197, 157);

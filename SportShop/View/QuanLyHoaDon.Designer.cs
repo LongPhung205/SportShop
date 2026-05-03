@@ -47,6 +47,11 @@ namespace SportShop.View
             this.txtSoDienThoai = new System.Windows.Forms.TextBox();
             this.lblDiaChi = new System.Windows.Forms.Label();
             this.txtDiaChi = new System.Windows.Forms.TextBox();
+            this.lblDiemKhaDung = new System.Windows.Forms.Label();
+            this.labelDiem = new System.Windows.Forms.Label();
+            this.nmDiemSuDung = new System.Windows.Forms.NumericUpDown();
+            this.btnApDiem = new System.Windows.Forms.Button();
+            this.btnDungAllDiem = new System.Windows.Forms.Button();
             this.lblTongTien = new System.Windows.Forms.Label();
             this.btnXuatHoaDon = new System.Windows.Forms.Button();
             this.btnThanhToan = new System.Windows.Forms.Button();
@@ -57,6 +62,7 @@ namespace SportShop.View
             ((System.ComponentModel.ISupportInitialize)(this.nmSoLuong)).BeginInit();
             this.panelBottom.SuspendLayout();
             this.groupThanhToan.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nmDiemSuDung)).BeginInit();
             this.panelFill.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvGioHang)).BeginInit();
             this.SuspendLayout();
@@ -278,7 +284,7 @@ namespace SportShop.View
             this.btnApVoucher.ForeColor = System.Drawing.Color.White;
             this.btnApVoucher.Location = new System.Drawing.Point(255, 119);
             this.btnApVoucher.Name = "btnApVoucher";
-            this.btnApVoucher.Size = new System.Drawing.Size(95, 27);
+            this.btnApVoucher.Size = new System.Drawing.Size(95, 30);
             this.btnApVoucher.TabIndex = 14;
             this.btnApVoucher.Text = "Áp mã";
             this.btnApVoucher.UseVisualStyleBackColor = false;
@@ -300,15 +306,20 @@ namespace SportShop.View
             this.panelBottom.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(246)))), ((int)(((byte)(250)))));
             this.panelBottom.Controls.Add(this.groupThanhToan);
             this.panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelBottom.Location = new System.Drawing.Point(0, 650);
+            this.panelBottom.Location = new System.Drawing.Point(0, 610);
             this.panelBottom.Name = "panelBottom";
             this.panelBottom.Padding = new System.Windows.Forms.Padding(15, 10, 15, 15);
-            this.panelBottom.Size = new System.Drawing.Size(1000, 200);
+            this.panelBottom.Size = new System.Drawing.Size(1000, 240);
             this.panelBottom.TabIndex = 1;
             // 
             // groupThanhToan
             // 
             this.groupThanhToan.BackColor = System.Drawing.Color.White;
+            this.groupThanhToan.Controls.Add(this.btnApDiem);
+            this.groupThanhToan.Controls.Add(this.btnDungAllDiem);
+            this.groupThanhToan.Controls.Add(this.lblDiemKhaDung);
+            this.groupThanhToan.Controls.Add(this.labelDiem);
+            this.groupThanhToan.Controls.Add(this.nmDiemSuDung);
             this.groupThanhToan.Controls.Add(this.label5);
             this.groupThanhToan.Controls.Add(this.txtTenKhachHang);
             this.groupThanhToan.Controls.Add(this.label6);
@@ -322,7 +333,7 @@ namespace SportShop.View
             this.groupThanhToan.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
             this.groupThanhToan.Location = new System.Drawing.Point(15, 10);
             this.groupThanhToan.Name = "groupThanhToan";
-            this.groupThanhToan.Size = new System.Drawing.Size(970, 175);
+            this.groupThanhToan.Size = new System.Drawing.Size(970, 215);
             this.groupThanhToan.TabIndex = 0;
             this.groupThanhToan.TabStop = false;
             this.groupThanhToan.Text = "   Thông tin Khách hàng & Thanh toán";
@@ -381,12 +392,71 @@ namespace SportShop.View
             this.txtDiaChi.Size = new System.Drawing.Size(280, 30);
             this.txtDiaChi.TabIndex = 5;
             // 
+            // lblDiemKhaDung
+            // 
+            this.lblDiemKhaDung.AutoSize = true;
+            this.lblDiemKhaDung.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.lblDiemKhaDung.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(167)))), ((int)(((byte)(69)))));
+            this.lblDiemKhaDung.Location = new System.Drawing.Point(25, 155);
+            this.lblDiemKhaDung.Name = "lblDiemKhaDung";
+            this.lblDiemKhaDung.Size = new System.Drawing.Size(142, 21);
+            this.lblDiemKhaDung.TabIndex = 9;
+            this.lblDiemKhaDung.Text = "Điểm hiện có: 0";
+            // 
+            // labelDiem
+            // 
+            this.labelDiem.AutoSize = true;
+            this.labelDiem.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.labelDiem.Location = new System.Drawing.Point(180, 155);
+            this.labelDiem.Name = "labelDiem";
+            this.labelDiem.Size = new System.Drawing.Size(65, 21);
+            this.labelDiem.TabIndex = 10;
+            this.labelDiem.Text = "Sử dụng:";
+            // 
+            // nmDiemSuDung
+            // 
+            this.nmDiemSuDung.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.nmDiemSuDung.Location = new System.Drawing.Point(250, 152);
+            this.nmDiemSuDung.Name = "nmDiemSuDung";
+            this.nmDiemSuDung.Size = new System.Drawing.Size(80, 30);
+            this.nmDiemSuDung.TabIndex = 11;
+            // 
+            // btnApDiem
+            // 
+            this.btnApDiem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(37)))), ((int)(((byte)(41)))));
+            this.btnApDiem.FlatAppearance.BorderSize = 0;
+            this.btnApDiem.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnApDiem.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnApDiem.ForeColor = System.Drawing.Color.White;
+            this.btnApDiem.Location = new System.Drawing.Point(340, 151);
+            this.btnApDiem.Name = "btnApDiem";
+            this.btnApDiem.Size = new System.Drawing.Size(70, 31);
+            this.btnApDiem.TabIndex = 12;
+            this.btnApDiem.Text = "Áp dụng";
+            this.btnApDiem.UseVisualStyleBackColor = false;
+            this.btnApDiem.Click += new System.EventHandler(this.btnApDiem_Click);
+            // 
+            // btnDungAllDiem
+            // 
+            this.btnDungAllDiem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(193)))), ((int)(((byte)(7)))));
+            this.btnDungAllDiem.FlatAppearance.BorderSize = 0;
+            this.btnDungAllDiem.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDungAllDiem.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnDungAllDiem.ForeColor = System.Drawing.Color.Black;
+            this.btnDungAllDiem.Location = new System.Drawing.Point(420, 151);
+            this.btnDungAllDiem.Name = "btnDungAllDiem";
+            this.btnDungAllDiem.Size = new System.Drawing.Size(70, 31);
+            this.btnDungAllDiem.TabIndex = 13;
+            this.btnDungAllDiem.Text = "Dùng All";
+            this.btnDungAllDiem.UseVisualStyleBackColor = false;
+            this.btnDungAllDiem.Click += new System.EventHandler(this.btnDungAllDiem_Click);
+            // 
             // lblTongTien
             // 
             this.lblTongTien.AutoSize = true;
             this.lblTongTien.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
             this.lblTongTien.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(45)))));
-            this.lblTongTien.Location = new System.Drawing.Point(450, 60);
+            this.lblTongTien.Location = new System.Drawing.Point(520, 60);
             this.lblTongTien.Name = "lblTongTien";
             this.lblTongTien.Size = new System.Drawing.Size(271, 46);
             this.lblTongTien.TabIndex = 6;
@@ -398,11 +468,11 @@ namespace SportShop.View
             this.btnXuatHoaDon.FlatAppearance.BorderSize = 0;
             this.btnXuatHoaDon.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnXuatHoaDon.ForeColor = System.Drawing.Color.White;
-            this.btnXuatHoaDon.Location = new System.Drawing.Point(750, 32);
+            this.btnXuatHoaDon.Location = new System.Drawing.Point(810, 32);
             this.btnXuatHoaDon.Name = "btnXuatHoaDon";
-            this.btnXuatHoaDon.Size = new System.Drawing.Size(180, 45);
+            this.btnXuatHoaDon.Size = new System.Drawing.Size(140, 45);
             this.btnXuatHoaDon.TabIndex = 7;
-            this.btnXuatHoaDon.Text = "📄 XUẤT HÓA ĐƠN";
+            this.btnXuatHoaDon.Text = "📄 XUẤT";
             this.btnXuatHoaDon.UseVisualStyleBackColor = false;
             this.btnXuatHoaDon.Click += new System.EventHandler(this.btnXuatHoaDon_Click);
             // 
@@ -413,11 +483,11 @@ namespace SportShop.View
             this.btnThanhToan.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnThanhToan.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnThanhToan.ForeColor = System.Drawing.Color.White;
-            this.btnThanhToan.Location = new System.Drawing.Point(750, 85);
+            this.btnThanhToan.Location = new System.Drawing.Point(810, 85);
             this.btnThanhToan.Name = "btnThanhToan";
-            this.btnThanhToan.Size = new System.Drawing.Size(180, 55);
+            this.btnThanhToan.Size = new System.Drawing.Size(140, 55);
             this.btnThanhToan.TabIndex = 8;
-            this.btnThanhToan.Text = "✅ THANH TOÁN";
+            this.btnThanhToan.Text = "✅ CHỐT";
             this.btnThanhToan.UseVisualStyleBackColor = false;
             this.btnThanhToan.Click += new System.EventHandler(this.btnThanhToan_Click);
             // 
@@ -428,7 +498,7 @@ namespace SportShop.View
             this.panelFill.Location = new System.Drawing.Point(0, 200);
             this.panelFill.Name = "panelFill";
             this.panelFill.Padding = new System.Windows.Forms.Padding(15, 10, 15, 10);
-            this.panelFill.Size = new System.Drawing.Size(1000, 450);
+            this.panelFill.Size = new System.Drawing.Size(1000, 410);
             this.panelFill.TabIndex = 2;
             // 
             // dgvGioHang
@@ -439,7 +509,7 @@ namespace SportShop.View
             this.dgvGioHang.Location = new System.Drawing.Point(15, 10);
             this.dgvGioHang.Name = "dgvGioHang";
             this.dgvGioHang.RowHeadersWidth = 51;
-            this.dgvGioHang.Size = new System.Drawing.Size(970, 430);
+            this.dgvGioHang.Size = new System.Drawing.Size(970, 390);
             this.dgvGioHang.TabIndex = 0;
             this.dgvGioHang.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvGioHang_CellClick);
             // 
@@ -461,6 +531,7 @@ namespace SportShop.View
             this.panelBottom.ResumeLayout(false);
             this.groupThanhToan.ResumeLayout(false);
             this.groupThanhToan.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nmDiemSuDung)).EndInit();
             this.panelFill.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvGioHang)).EndInit();
             this.ResumeLayout(false);
@@ -469,7 +540,6 @@ namespace SportShop.View
 
         #endregion
 
-        // Khai báo controls
         private System.Windows.Forms.Panel panelTop;
         private System.Windows.Forms.Panel panelBottom;
         private System.Windows.Forms.Panel panelFill;
@@ -502,5 +572,11 @@ namespace SportShop.View
         private System.Windows.Forms.Label lblDiaChi;
         private Label label7;
         private ComboBox cboPhuongThucThanhToan;
+
+        private System.Windows.Forms.Label lblDiemKhaDung;
+        private System.Windows.Forms.Label labelDiem;
+        private System.Windows.Forms.NumericUpDown nmDiemSuDung;
+        private System.Windows.Forms.Button btnApDiem;
+        private System.Windows.Forms.Button btnDungAllDiem;
     }
 }

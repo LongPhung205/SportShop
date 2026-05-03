@@ -146,6 +146,7 @@ namespace SportShop.View
                 dgvMauSac.DataSource = _controller.GetAllColors();
 
                 if (dgvMauSac.Columns["Id"] != null) dgvMauSac.Columns["Id"].Visible = false;
+                if (dgvMauSac.Columns["ProductVariants"] != null) dgvMauSac.Columns["ProductVariants"].Visible = false;
                 if (dgvMauSac.Columns["IsActive"] != null) dgvMauSac.Columns["IsActive"].Visible = false;
 
                 if (dgvMauSac.Columns["Name"] != null) dgvMauSac.Columns["Name"].HeaderText = "Tên Màu Sắc";

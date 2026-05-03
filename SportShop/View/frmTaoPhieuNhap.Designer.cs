@@ -64,11 +64,14 @@
             // 
             this.lblTitle.AutoSize = true;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(44)))));
+            this.lblTitle.Image = global::SportShop.Properties.Resources.add_24dp_000000_FILL0_wght400_GRAD0_opsz24;
+            this.lblTitle.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lblTitle.Location = new System.Drawing.Point(15, 15);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(300, 32);
+            this.lblTitle.Size = new System.Drawing.Size(295, 32);
             this.lblTitle.TabIndex = 0;
-            this.lblTitle.Text = "➕ TẠO PHIẾU NHẬP MỚI";
+            this.lblTitle.Text = "   TẠO PHIẾU NHẬP MỚI";
             // 
             // pnlInfo
             // 
@@ -93,9 +96,11 @@
             // label2
             // 
             this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.label2.ForeColor = System.Drawing.Color.Black;
             this.label2.Location = new System.Drawing.Point(456, 10);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(66, 21);
+            this.label2.Size = new System.Drawing.Size(72, 21);
             this.label2.TabIndex = 2;
             this.label2.Text = "Ghi chú:";
             // 
@@ -106,16 +111,17 @@
             this.cboNhaCungCap.FormattingEnabled = true;
             this.cboNhaCungCap.Location = new System.Drawing.Point(20, 35);
             this.cboNhaCungCap.Name = "cboNhaCungCap";
-            this.cboNhaCungCap.Size = new System.Drawing.Size(380, 33);
+            this.cboNhaCungCap.Size = new System.Drawing.Size(380, 31);
             this.cboNhaCungCap.TabIndex = 1;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.label1.ForeColor = System.Drawing.Color.Black;
             this.label1.Location = new System.Drawing.Point(16, 10);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(121, 21);
+            this.label1.Size = new System.Drawing.Size(119, 21);
             this.label1.TabIndex = 0;
             this.label1.Text = "Nhà cung cấp:";
             // 
@@ -136,7 +142,7 @@
             // 
             // btnThemItem
             // 
-            this.btnThemItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(167)))), ((int)(((byte)(69)))));
+            this.btnThemItem.BackColor = System.Drawing.Color.MediumTurquoise;
             this.btnThemItem.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnThemItem.FlatAppearance.BorderSize = 0;
             this.btnThemItem.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -153,9 +159,17 @@
             // nmGiaNhap
             // 
             this.nmGiaNhap.Font = new System.Drawing.Font("Segoe UI", 10.5F);
-            this.nmGiaNhap.Increment = new decimal(new int[] { 10000, 0, 0, 0 });
+            this.nmGiaNhap.Increment = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
             this.nmGiaNhap.Location = new System.Drawing.Point(510, 35);
-            this.nmGiaNhap.Maximum = new decimal(new int[] { 1000000000, 0, 0, 0 });
+            this.nmGiaNhap.Maximum = new decimal(new int[] {
+            1000000000,
+            0,
+            0,
+            0});
             this.nmGiaNhap.Name = "nmGiaNhap";
             this.nmGiaNhap.Size = new System.Drawing.Size(150, 31);
             this.nmGiaNhap.TabIndex = 5;
@@ -164,9 +178,10 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.label5.ForeColor = System.Drawing.Color.Black;
             this.label5.Location = new System.Drawing.Point(506, 10);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(106, 21);
+            this.label5.Size = new System.Drawing.Size(111, 21);
             this.label5.TabIndex = 4;
             this.label5.Text = "Giá Nhập (₫):";
             // 
@@ -174,19 +189,28 @@
             // 
             this.nmSoLuong.Font = new System.Drawing.Font("Segoe UI", 10.5F);
             this.nmSoLuong.Location = new System.Drawing.Point(410, 35);
-            this.nmSoLuong.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
+            this.nmSoLuong.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
             this.nmSoLuong.Name = "nmSoLuong";
             this.nmSoLuong.Size = new System.Drawing.Size(80, 31);
             this.nmSoLuong.TabIndex = 3;
-            this.nmSoLuong.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            this.nmSoLuong.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.label4.ForeColor = System.Drawing.Color.Black;
             this.label4.Location = new System.Drawing.Point(406, 10);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(35, 21);
+            this.label4.Size = new System.Drawing.Size(31, 21);
             this.label4.TabIndex = 2;
             this.label4.Text = "SL:";
             // 
@@ -197,16 +221,17 @@
             this.cboSanPham.FormattingEnabled = true;
             this.cboSanPham.Location = new System.Drawing.Point(20, 35);
             this.cboSanPham.Name = "cboSanPham";
-            this.cboSanPham.Size = new System.Drawing.Size(360, 33);
+            this.cboSanPham.Size = new System.Drawing.Size(360, 31);
             this.cboSanPham.TabIndex = 1;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.label3.ForeColor = System.Drawing.Color.Black;
             this.label3.Location = new System.Drawing.Point(16, 10);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(176, 21);
+            this.label3.Size = new System.Drawing.Size(185, 21);
             this.label3.TabIndex = 0;
             this.label3.Text = "Sản phẩm (Màu - Size):";
             // 
@@ -219,7 +244,7 @@
             this.dgvChiTiet.BorderStyle = System.Windows.Forms.BorderStyle.None;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             dataGridViewCellStyle1.ForeColor = System.Drawing.Color.Black;
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
@@ -277,17 +302,18 @@
             // 
             // btnLuuNhap
             // 
-            this.btnLuuNhap.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(123)))), ((int)(((byte)(255)))));
+            this.btnLuuNhap.BackColor = System.Drawing.Color.MediumTurquoise;
             this.btnLuuNhap.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnLuuNhap.FlatAppearance.BorderSize = 0;
             this.btnLuuNhap.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnLuuNhap.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.btnLuuNhap.ForeColor = System.Drawing.Color.White;
+            this.btnLuuNhap.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnLuuNhap.Location = new System.Drawing.Point(715, 20);
             this.btnLuuNhap.Name = "btnLuuNhap";
             this.btnLuuNhap.Size = new System.Drawing.Size(150, 45);
             this.btnLuuNhap.TabIndex = 2;
-            this.btnLuuNhap.Text = "💾 LƯU NHÁP";
+            this.btnLuuNhap.Text = "LƯU NHÁP";
             this.btnLuuNhap.UseVisualStyleBackColor = false;
             this.btnLuuNhap.Click += new System.EventHandler(this.btnLuuNhap_Click);
             // 
@@ -298,7 +324,7 @@
             this.lblTongTien.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(53)))), ((int)(((byte)(69)))));
             this.lblTongTien.Location = new System.Drawing.Point(200, 22);
             this.lblTongTien.Name = "lblTongTien";
-            this.lblTongTien.Size = new System.Drawing.Size(63, 41);
+            this.lblTongTien.Size = new System.Drawing.Size(62, 41);
             this.lblTongTien.TabIndex = 1;
             this.lblTongTien.Text = "0 ₫";
             // 
@@ -308,7 +334,7 @@
             this.label6.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.label6.Location = new System.Drawing.Point(25, 30);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(176, 28);
+            this.label6.Size = new System.Drawing.Size(172, 28);
             this.label6.TabIndex = 0;
             this.label6.Text = "TỔNG PHẢI TRẢ:";
             // 
@@ -319,7 +345,7 @@
             this.label7.ForeColor = System.Drawing.Color.Gray;
             this.label7.Location = new System.Drawing.Point(15, 260);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(262, 20);
+            this.label7.Size = new System.Drawing.Size(277, 20);
             this.label7.TabIndex = 5;
             this.label7.Text = "* Mẹo: Double Click vào món hàng để xóa";
             // 

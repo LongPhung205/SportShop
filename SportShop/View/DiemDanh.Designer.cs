@@ -17,9 +17,9 @@
 
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.lblTitle = new System.Windows.Forms.Label();
+            System.Windows.Forms.Label lblTitle;
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dgvDanhSach = new System.Windows.Forms.DataGridView();
             this.pnlAuth = new System.Windows.Forms.Panel();
             this.label5 = new System.Windows.Forms.Label();
@@ -31,8 +31,9 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.pnlCalendar = new System.Windows.Forms.Panel();
-            this.lblCalTitle = new System.Windows.Forms.Label();
             this.calDiemDanh = new System.Windows.Forms.MonthCalendar();
+            this.lblCalTitle = new System.Windows.Forms.Label();
+            lblTitle = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDanhSach)).BeginInit();
             this.pnlAuth.SuspendLayout();
             this.pnlCalendar.SuspendLayout();
@@ -40,43 +41,16 @@
             // 
             // lblTitle
             // 
-            this.lblTitle.AutoSize = true;
-            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
-            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.lblTitle.Location = new System.Drawing.Point(320, 20);
-            this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(490, 37);
-            this.lblTitle.TabIndex = 0;
-            this.lblTitle.Text = "CHI TIẾT CHẤM CÔNG NGÀY HÔM NAY";
-            // 
-            // pnlCalendar
-            // 
-            this.pnlCalendar.BackColor = System.Drawing.Color.White;
-            this.pnlCalendar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pnlCalendar.Controls.Add(this.calDiemDanh);
-            this.pnlCalendar.Controls.Add(this.lblCalTitle);
-            this.pnlCalendar.Location = new System.Drawing.Point(20, 70);
-            this.pnlCalendar.Name = "pnlCalendar";
-            this.pnlCalendar.Size = new System.Drawing.Size(280, 410);
-            this.pnlCalendar.TabIndex = 11;
-            // 
-            // lblCalTitle
-            // 
-            this.lblCalTitle.AutoSize = true;
-            this.lblCalTitle.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lblCalTitle.Location = new System.Drawing.Point(15, 15);
-            this.lblCalTitle.Name = "lblCalTitle";
-            this.lblCalTitle.Size = new System.Drawing.Size(155, 28);
-            this.lblCalTitle.TabIndex = 0;
-            this.lblCalTitle.Text = "📅 CHỌN NGÀY";
-            // 
-            // calDiemDanh
-            // 
-            this.calDiemDanh.Location = new System.Drawing.Point(9, 60);
-            this.calDiemDanh.MaxSelectionCount = 1;
-            this.calDiemDanh.Name = "calDiemDanh";
-            this.calDiemDanh.TabIndex = 1;
-            this.calDiemDanh.DateChanged += new System.Windows.Forms.DateRangeEventHandler(this.calDiemDanh_DateChanged);
+            this.lblTitle = new System.Windows.Forms.Label();
+            lblTitle.AutoSize = true;
+            lblTitle.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
+            lblTitle.ForeColor = System.Drawing.Color.Black;
+            lblTitle.Location = new System.Drawing.Point(320, 20);
+            lblTitle.Name = "lblTitle";
+            lblTitle.Size = new System.Drawing.Size(514, 37);
+            lblTitle.TabIndex = 0;
+            lblTitle.Text = "CHI TIẾT CHẤM CÔNG NGÀY HÔM NAY";
+
             // 
             // dgvDanhSach
             // 
@@ -85,24 +59,24 @@
             this.dgvDanhSach.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvDanhSach.BackgroundColor = System.Drawing.Color.White;
             this.dgvDanhSach.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvDanhSach.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            dataGridViewCellStyle7.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvDanhSach.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
             this.dgvDanhSach.ColumnHeadersHeight = 40;
             this.dgvDanhSach.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(238)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvDanhSach.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(238)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvDanhSach.DefaultCellStyle = dataGridViewCellStyle8;
             this.dgvDanhSach.EnableHeadersVisualStyles = false;
             this.dgvDanhSach.Location = new System.Drawing.Point(320, 70);
             this.dgvDanhSach.Name = "dgvDanhSach";
@@ -151,9 +125,9 @@
             this.btnCheckOut.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCheckOut.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.btnCheckOut.ForeColor = System.Drawing.Color.White;
-            this.btnCheckOut.Location = new System.Drawing.Point(620, 90);
+            this.btnCheckOut.Location = new System.Drawing.Point(620, 100);
             this.btnCheckOut.Name = "btnCheckOut";
-            this.btnCheckOut.Size = new System.Drawing.Size(180, 50);
+            this.btnCheckOut.Size = new System.Drawing.Size(180, 40);
             this.btnCheckOut.TabIndex = 9;
             this.btnCheckOut.Text = "VỀ (CHECK-OUT)";
             this.btnCheckOut.UseVisualStyleBackColor = false;
@@ -161,15 +135,16 @@
             // 
             // btnCheckIn
             // 
+            this.btnCheckIn.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnCheckIn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(167)))), ((int)(((byte)(69)))));
             this.btnCheckIn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnCheckIn.FlatAppearance.BorderSize = 0;
             this.btnCheckIn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCheckIn.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.btnCheckIn.ForeColor = System.Drawing.Color.White;
-            this.btnCheckIn.Location = new System.Drawing.Point(420, 90);
+            this.btnCheckIn.Location = new System.Drawing.Point(420, 100);
             this.btnCheckIn.Name = "btnCheckIn";
-            this.btnCheckIn.Size = new System.Drawing.Size(180, 50);
+            this.btnCheckIn.Size = new System.Drawing.Size(180, 40);
             this.btnCheckIn.TabIndex = 8;
             this.btnCheckIn.Text = "ĐI LÀM (CHECK-IN)";
             this.btnCheckIn.UseVisualStyleBackColor = false;
@@ -195,18 +170,22 @@
             // label4
             // 
             this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Segoe UI", 10.2F);
+            this.label4.ForeColor = System.Drawing.Color.Black;
             this.label4.Location = new System.Drawing.Point(20, 130);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(78, 21);
+            this.label4.Size = new System.Drawing.Size(86, 23);
             this.label4.TabIndex = 2;
             this.label4.Text = "Mật khẩu:";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.label3.Location = new System.Drawing.Point(20, 75);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(78, 21);
+            this.label3.Size = new System.Drawing.Size(86, 23);
             this.label3.TabIndex = 1;
             this.label3.Text = "Tài khoản:";
             // 
@@ -214,11 +193,48 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(44)))));
+            this.label1.Image = global::SportShop.Properties.Resources.calendar_month_24dp_000000_FILL0_wght400_GRAD0_opsz24;
+            this.label1.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
             this.label1.Location = new System.Drawing.Point(20, 15);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(351, 28);
+            this.label1.Size = new System.Drawing.Size(353, 28);
             this.label1.TabIndex = 0;
-            this.label1.Text = "🔒 BẢNG CHẤM CÔNG NHÂN VIÊN";
+            this.label1.Text = "      BẢNG CHẤM CÔNG NHÂN VIÊN";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // pnlCalendar
+            // 
+            this.pnlCalendar.BackColor = System.Drawing.Color.White;
+            this.pnlCalendar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlCalendar.Controls.Add(this.calDiemDanh);
+            this.pnlCalendar.Controls.Add(this.lblCalTitle);
+            this.pnlCalendar.Location = new System.Drawing.Point(20, 70);
+            this.pnlCalendar.Name = "pnlCalendar";
+            this.pnlCalendar.Size = new System.Drawing.Size(280, 410);
+            this.pnlCalendar.TabIndex = 11;
+            // 
+            // calDiemDanh
+            // 
+            this.calDiemDanh.Location = new System.Drawing.Point(9, 60);
+            this.calDiemDanh.MaxSelectionCount = 1;
+            this.calDiemDanh.Name = "calDiemDanh";
+            this.calDiemDanh.TabIndex = 1;
+            this.calDiemDanh.DateChanged += new System.Windows.Forms.DateRangeEventHandler(this.calDiemDanh_DateChanged);
+            // 
+            // lblCalTitle
+            // 
+            this.lblCalTitle.AutoSize = true;
+            this.lblCalTitle.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.lblCalTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(77)))), ((int)(((byte)(44)))));
+            this.lblCalTitle.Image = global::SportShop.Properties.Resources.calendar_month_24dp_000000_FILL0_wght400_GRAD0_opsz24;
+            this.lblCalTitle.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.lblCalTitle.Location = new System.Drawing.Point(15, 15);
+            this.lblCalTitle.Name = "lblCalTitle";
+            this.lblCalTitle.Size = new System.Drawing.Size(166, 28);
+            this.lblCalTitle.TabIndex = 0;
+            this.lblCalTitle.Tag = "  ";
+            this.lblCalTitle.Text = "      CHỌN NGÀY";
             // 
             // DiemDanh
             // 
@@ -228,7 +244,7 @@
             this.Controls.Add(this.pnlCalendar);
             this.Controls.Add(this.pnlAuth);
             this.Controls.Add(this.dgvDanhSach);
-            this.Controls.Add(this.lblTitle);
+            this.Controls.Add(lblTitle);
             this.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.Name = "DiemDanh";
             this.Size = new System.Drawing.Size(1065, 811);
@@ -244,8 +260,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.DataGridView dgvDanhSach;
         private System.Windows.Forms.Panel pnlAuth;
         private System.Windows.Forms.Label label5;
@@ -259,5 +273,6 @@
         private System.Windows.Forms.Panel pnlCalendar;
         private System.Windows.Forms.Label lblCalTitle;
         private System.Windows.Forms.MonthCalendar calDiemDanh;
+        private System.Windows.Forms.Label lblTitle;
     }
 }

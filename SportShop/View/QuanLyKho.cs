@@ -202,6 +202,8 @@ namespace SportShop.View
                     if (dgvChiTiet.Columns["Id"] != null) dgvChiTiet.Columns["Id"].Visible = false;
                     if (dgvChiTiet.Columns["ImportOrderId"] != null) dgvChiTiet.Columns["ImportOrderId"].Visible = false;
                     if (dgvChiTiet.Columns["ProductVariantId"] != null) dgvChiTiet.Columns["ProductVariantId"].Visible = false;
+                    if (dgvChiTiet.Columns["ImportOrder"] != null) dgvChiTiet.Columns["ImportOrder"].Visible = false;
+                    if (dgvChiTiet.Columns["ProductVariant"] != null) dgvChiTiet.Columns["ProductVariant"].Visible = false;
 
                     if (dgvChiTiet.Columns["VariantDisplayName"] != null)
                     {

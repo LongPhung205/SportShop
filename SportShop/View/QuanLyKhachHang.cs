@@ -33,7 +33,7 @@ namespace SportShop.View
             if (dgvKhachHang.Columns["Name"] != null) dgvKhachHang.Columns["Name"].HeaderText = "Họ Tên";
             if (dgvKhachHang.Columns["Phone"] != null) dgvKhachHang.Columns["Phone"].HeaderText = "Số Điện Thoại";
             if (dgvKhachHang.Columns["Address"] != null) dgvKhachHang.Columns["Address"].HeaderText = "Địa Chỉ";
-            if (dgvKhachHang.Columns["Email"] != null) dgvKhachHang.Columns["Email"].HeaderText = "Email";
+            
 
             // Bổ sung hiển thị Điểm tích lũy trên lưới
             if (dgvKhachHang.Columns["LoyaltyPoints"] != null)
@@ -57,7 +57,7 @@ namespace SportShop.View
                 Name = txtHoTen.Text.Trim(),
                 Phone = txtSDT.Text.Trim(),
                 Address = txtDiaChi.Text.Trim(),
-                Email = txtEmail.Text.Trim(),
+               
                 LoyaltyPoints = 0 // Khách mới tạo mặc định 0 điểm
             };
 
@@ -79,7 +79,7 @@ namespace SportShop.View
                 Name = txtHoTen.Text.Trim(),
                 Phone = txtSDT.Text.Trim(),
                 Address = txtDiaChi.Text.Trim(),
-                Email = txtEmail.Text.Trim(),
+                
                 // Giữ nguyên điểm tích lũy cũ khi cập nhật thông tin
                 LoyaltyPoints = Convert.ToInt32(dgvKhachHang.CurrentRow.Cells["LoyaltyPoints"].Value ?? 0)
             };
@@ -114,7 +114,7 @@ namespace SportShop.View
             txtHoTen.Clear();
             txtSDT.Clear();
             txtDiaChi.Clear();
-            txtEmail.Clear();
+           
             txtTimKiem.Clear();
 
             // Xóa rỗng các thông tin hiển thị phụ
@@ -142,7 +142,7 @@ namespace SportShop.View
                 txtHoTen.Text = row.Cells["Name"].Value?.ToString();
                 txtSDT.Text = row.Cells["Phone"].Value?.ToString();
                 txtDiaChi.Text = row.Cells["Address"].Value?.ToString();
-                txtEmail.Text = row.Cells["Email"].Value?.ToString();
+                
 
                 // 2. Hiển thị Điểm Tích Lũy (Chỉ cập nhật nếu trên giao diện bạn có kéo label tên là lblDiemTichLuy)
                 int diem = Convert.ToInt32(row.Cells["LoyaltyPoints"].Value ?? 0);

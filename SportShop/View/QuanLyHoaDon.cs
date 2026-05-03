@@ -19,7 +19,13 @@ namespace SportShop.View
         private int phanTramGiam = 0;
         private decimal tongTienTruocGiam = 0;
 
-        // Khởi tạo các Controller (View chỉ giao tiếp với Controller, không gọi DBConnection trực tiếp)
+        // --- CÁC BIẾN CHO ĐIỂM LOYALTY ---
+        private int _diemKhachHangHienTai = 0;
+        private int _diemSuDung = 0;
+        private decimal _tienGiamTuDiem = 0;
+        // ---------------------------------
+
+        // Khởi tạo các Controller
         private QuanLyVoucherController _voucherController = new QuanLyVoucherController();
         private QuanLyHoaDonController _orderController = new QuanLyHoaDonController();
         private QuanLyKhachHangController _customerController = new QuanLyKhachHangController();
@@ -78,6 +84,10 @@ namespace SportShop.View
             LoadComboBoxSanPham();
             LoadComboBoxPhuongThucThanhToan();
             cboSanPham.SelectedIndexChanged += CboSanPham_SelectedIndexChanged;
+
+            // 👉 Đăng ký sự kiện Tự động tìm khách hàng khi nhập xong SĐT
+            txtSoDienThoai.Leave += TxtSoDienThoai_Leave;
+
             NhanDuLieuTuGioHang();
 
             if (_sanPhamDuocChon != -1)
@@ -86,6 +96,88 @@ namespace SportShop.View
             }
         }
 
+        // =======================================================
+        // CƠ CHẾ TÌM KHÁCH HÀNG & ĐIỂM LOYALTY
+        // =======================================================
+        private void TxtSoDienThoai_Leave(object sender, EventArgs e)
+        {
+            string sdt = txtSoDienThoai.Text.Trim();
+            if (!string.IsNullOrEmpty(sdt))
+            {
+                var customers = _customerController.SearchCustomers(sdt);
+                if (customers.Count > 0)
+                {
+                    var cus = customers[0];
+                    txtTenKhachHang.Text = cus.Name;
+                    txtDiaChi.Text = cus.Address;
+
+                    // Giả sử Model Customer của bạn có cột LoyaltyPoints (nếu tên khác bạn tự sửa lại nhé)
+                    _diemKhachHangHienTai = cus.LoyaltyPoints ?? 0;
+
+                    lblDiemKhaDung.Text = $"Điểm hiện có: {_diemKhachHangHienTai}";
+                    nmDiemSuDung.Maximum = _diemKhachHangHienTai;
+                }
+                else
+                {
+                    ResetDiemLoyalty();
+                }
+            }
+            else
+            {
+                ResetDiemLoyalty();
+            }
+        }
+
+        private void ResetDiemLoyalty()
+        {
+            _diemKhachHangHienTai = 0;
+            _diemSuDung = 0;
+            _tienGiamTuDiem = 0;
+            lblDiemKhaDung.Text = "Điểm hiện có: 0";
+            if (nmDiemSuDung != null)
+            {
+                nmDiemSuDung.Maximum = 0;
+                nmDiemSuDung.Value = 0;
+            }
+        }
+
+       
+
+        private void btnApDiem_Click(object sender, EventArgs e)
+        {
+            // Kiểm tra xem khách có nhập lố số điểm mình đang có không
+            if (nmDiemSuDung.Value > _diemKhachHangHienTai)
+            {
+                MessageBox.Show($"Khách hàng chỉ có tối đa {_diemKhachHangHienTai} điểm!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                nmDiemSuDung.Value = _diemKhachHangHienTai;
+            }
+
+            // Chốt số điểm dùng và chạy hàm tính tiền
+            _diemSuDung = (int)nmDiemSuDung.Value;
+            _tienGiamTuDiem = _diemSuDung * 100;
+            TinhTongTien();
+        }
+
+        private void btnDungAllDiem_Click(object sender, EventArgs e)
+        {
+            if (_diemKhachHangHienTai > 0)
+            {
+                nmDiemSuDung.Value = _diemKhachHangHienTai;
+
+                // Tự động kích hoạt luôn tính tiền khi bấm Dùng All cho nhanh
+                _diemSuDung = _diemKhachHangHienTai;
+                _tienGiamTuDiem = _diemSuDung * 1000;
+                TinhTongTien();
+            }
+            else
+            {
+                MessageBox.Show("Khách hàng hiện chưa có điểm tích lũy nào!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        // =======================================================
+        // CÁC HÀM XỬ LÝ SẢN PHẨM & GIỎ HÀNG NHƯ CŨ
+        // =======================================================
         private void NhanDuLieuTuGioHang()
         {
             if (SportShop.Model.CartManager.CurrentCart != null && SportShop.Model.CartManager.CurrentCart.Count > 0)
@@ -225,10 +317,97 @@ namespace SportShop.View
             catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
 
+        private void btnSua_Click(object sender, EventArgs e)
+        {
+            if (dgvGioHang.CurrentRow != null)
+            {
+                int rowIndex = dgvGioHang.CurrentRow.Index;
+                int slMoi = (int)nmSoLuong.Value;
+
+                if (slMoi <= 0) { MessageBox.Show("Số lượng phải lớn hơn 0!"); return; }
+
+                if (cboSanPham.SelectedIndex != -1 && cboSize.SelectedIndex != -1 && cboMauSac.SelectedIndex != -1)
+                {
+                    int pId = (int)cboSanPham.SelectedValue;
+                    int sId = (int)cboSize.SelectedValue;
+                    int cId = (int)cboMauSac.SelectedValue;
+
+                    var variant = _productController.GetVariantsByProductId(pId)
+                                                    .FirstOrDefault(v => v.SizeId == sId && v.ColorId == cId && v.IsActive == true);
+                    if (variant != null)
+                    {
+                        int tonKho = variant.Quantity;
+                        int slDaCoTrongGio = 0;
+
+                        foreach (DataRow r in dtGioHang.Rows)
+                        {
+                            if (dtGioHang.Rows.IndexOf(r) != rowIndex && Convert.ToInt32(r["IdVariant"]) == variant.Id)
+                            {
+                                slDaCoTrongGio += Convert.ToInt32(r["SoLuong"]);
+                            }
+                        }
+
+                        if (slDaCoTrongGio + slMoi > tonKho)
+                        {
+                            MessageBox.Show($"Tồn kho không đủ! Sản phẩm này hiện chỉ còn {tonKho} chiếc\n(Bạn đã có {slDaCoTrongGio} chiếc ở dòng khác trong giỏ hàng).", "Hết hàng", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+
+                        dtGioHang.Rows[rowIndex]["IdVariant"] = variant.Id;
+                        dtGioHang.Rows[rowIndex]["Size"] = cboSize.Text;
+                        dtGioHang.Rows[rowIndex]["Mau"] = cboMauSac.Text;
+                        dtGioHang.Rows[rowIndex]["DonGia"] = variant.SellingPrice;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Phiên bản (Size/Màu) này đã hết hoặc không tồn tại!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Vui lòng chọn đầy đủ thông tin Sản phẩm, Size và Màu sắc trên thanh chọn để tiến hành sửa!", "Nhắc nhở", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                dtGioHang.Rows[rowIndex]["SoLuong"] = slMoi;
+                TinhTongTien();
+
+                MessageBox.Show("Đã cập nhật thông tin sản phẩm thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show("Vui lòng chọn một dòng sản phẩm trong giỏ hàng để sửa!", "Nhắc nhở", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void btnXoa_Click(object sender, EventArgs e)
+        {
+            if (dgvGioHang.CurrentRow != null)
+            {
+                dtGioHang.Rows.RemoveAt(dgvGioHang.CurrentRow.Index);
+                TinhTongTien();
+            }
+        }
+
+        private void dgvGioHang_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                string tenSP = dgvGioHang.Rows[e.RowIndex].Cells["TenSP"].Value.ToString();
+                cboSanPham.SelectedIndex = cboSanPham.FindStringExact(tenSP);
+
+                nmSoLuong.Value = Convert.ToInt32(dgvGioHang.Rows[e.RowIndex].Cells["SoLuong"].Value);
+            }
+        }
+
+        // =======================================================
+        // TÍNH TOÁN TIỀN (GỘP CẢ VOUCHER VÀ ĐIỂM LOYALTY)
+        // =======================================================
         private void TinhTongTien()
         {
-            decimal tongGiamGia = 0;
-            decimal tongTienSauGiam = 0;
+            decimal tongGiamGiaVoucher = 0;
+            decimal tongTienSauGiamVoucher = 0;
             tongTienTruocGiam = 0;
 
             dgvGioHang.SuspendLayout();
@@ -249,22 +428,32 @@ namespace SportShop.View
                 r["ThanhTien"] = thanhTien;
                 r.EndEdit();
 
-                tongGiamGia += giamGiaMon;
-                tongTienSauGiam += thanhTien;
+                tongGiamGiaVoucher += giamGiaMon;
+                tongTienSauGiamVoucher += thanhTien;
             }
 
             dtGioHang.AcceptChanges();
             dgvGioHang.ResumeLayout();
             dgvGioHang.Refresh();
 
-            giamGia = tongGiamGia;
+            giamGia = tongGiamGiaVoucher;
 
-            if (phanTramGiam > 0)
-                lblGiamGia.Text = $"Giảm giá ({phanTramGiam}%): {giamGia:N0} ₫";
-            else
-                lblGiamGia.Text = "Giảm giá: 0 ₫";
+            // Xử lý cấn trừ điểm để không bị âm tiền
+            if (_tienGiamTuDiem > tongTienSauGiamVoucher)
+            {
+                // Chỉ cho phép dùng tối đa điểm bằng đúng số tiền đơn hàng
+                nmDiemSuDung.Value = Math.Ceiling(tongTienSauGiamVoucher / 1000);
+                _tienGiamTuDiem = nmDiemSuDung.Value * 1000;
+            }
 
-            lblTongTien.Text = "TỔNG: " + tongTienSauGiam.ToString("N0") + " ₫";
+            decimal tongCuoiCung = tongTienSauGiamVoucher - _tienGiamTuDiem;
+            if (tongCuoiCung < 0) tongCuoiCung = 0;
+
+            // Update Label hiển thị
+            string txtGiamGia = $"Voucher ({phanTramGiam}%): -{giamGia:N0} ₫\nTừ điểm: -{_tienGiamTuDiem:N0} ₫";
+            lblGiamGia.Text = txtGiamGia;
+
+            lblTongTien.Text = "TỔNG: " + tongCuoiCung.ToString("N0") + " ₫";
         }
 
         private void txtMaVoucher_Click(object sender, EventArgs e)
@@ -295,6 +484,9 @@ namespace SportShop.View
             TinhTongTien();
         }
 
+        // =======================================================
+        // THANH TOÁN & IN BÁO CÁO
+        // =======================================================
         private void btnThanhToan_Click(object sender, EventArgs e)
         {
             if (dtGioHang.Rows.Count == 0)
@@ -339,22 +531,25 @@ namespace SportShop.View
                 }
 
                 int currentUserId = UserSession.CurrentUser != null ? UserSession.CurrentUser.Id : 1;
-
                 string phuongThucThanhToan = cboPhuongThucThanhToan != null && cboPhuongThucThanhToan.SelectedItem != null
                     ? cboPhuongThucThanhToan.SelectedItem.ToString()
                     : "Tiền mặt";
 
-                // 👉 ĐÃ FIX: TRUYỀN ĐẦY ĐỦ TIỀN VÀO OBJECT
+                decimal tongTruocVoucher = tongTienTruocGiam;
+                decimal tongDuocGiamGia = giamGia + _tienGiamTuDiem; // Gộp cả giảm voucher + giảm từ điểm
+                decimal tongPhaiTra = tongTienTruocGiam - tongDuocGiamGia;
+                if (tongPhaiTra < 0) tongPhaiTra = 0;
+
                 Order newOrder = new Order
                 {
                     CustomerId = customerId,
                     UserId = currentUserId,
                     OrderDate = DateTime.Now,
-                    Subtotal = tongTienTruocGiam,                     // Tổng tiền chưa giảm
-                    DiscountAmount = giamGia,                         // Số tiền được giảm
-                    TotalAmount = tongTienTruocGiam - giamGia,        // Thành tiền khách phải trả thực tế
+                    Subtotal = tongTruocVoucher,
+                    DiscountAmount = tongDuocGiamGia,
+                    TotalAmount = tongPhaiTra,
                     PaymentMethod = phuongThucThanhToan,
-                    Notes = "Thanh toán tại quầy"
+                    Notes = $"Thanh toán tại quầy. (Voucher: -{giamGia:N0}, Điểm: -{_tienGiamTuDiem:N0})"
                 };
 
                 List<OrderDetail> details = new List<OrderDetail>();
@@ -369,7 +564,6 @@ namespace SportShop.View
                 }
 
                 if (_orderController.AddOrder(newOrder, details))
-
                 {
                     MessageBox.Show("Thanh toán thành công! Hóa đơn đã được lưu.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -378,15 +572,25 @@ namespace SportShop.View
                     {
                         btnXuatHoaDon_Click(null, null);
                     }
-                    // Đặt đoạn này NGAY SAU khi _orderController.AddOrder(...) trả về true
+
+                    // XỬ LÝ KHÁCH HÀNG THÂN THIẾT SAU KHI MUA THÀNH CÔNG
                     if (customerId.HasValue)
                     {
-                        _customerController.AddLoyaltyPoints(customerId.Value, tongTienTruocGiam - giamGia);
+                        // 1. Trừ số điểm khách đã lấy ra xài
+                        if (_diemSuDung > 0)
+                        {
+                            // YÊU CẦU: Bạn cần có hàm DeductLoyaltyPoints trong _customerController
+                            _customerController.DeductLoyaltyPoints(customerId.Value, _diemSuDung);
+                        }
+                        // 2. Cộng điểm tích lũy mới (Dựa trên số tiền mặt khách trả thực tế)
+                        _customerController.AddLoyaltyPoints(customerId.Value, tongPhaiTra);
                     }
+
                     if (!string.IsNullOrWhiteSpace(txtVoucher.Text))
                     {
                         _voucherController.IncreaseVoucherUsage(txtVoucher.Text.Trim());
                     }
+
                     btnLamMoi_Click(sender, e);
                 }
                 else
@@ -400,97 +604,6 @@ namespace SportShop.View
             }
         }
 
-        private void btnSua_Click(object sender, EventArgs e)
-        {
-            if (dgvGioHang.CurrentRow != null)
-            {
-                int rowIndex = dgvGioHang.CurrentRow.Index;
-                int slMoi = (int)nmSoLuong.Value;
-
-                if (slMoi <= 0) { MessageBox.Show("Số lượng phải lớn hơn 0!"); return; }
-
-                // Bắt buộc phải chọn đủ Size/Màu mới cho sửa để có dữ liệu check tồn kho
-                if (cboSanPham.SelectedIndex != -1 && cboSize.SelectedIndex != -1 && cboMauSac.SelectedIndex != -1)
-                {
-                    int pId = (int)cboSanPham.SelectedValue;
-                    int sId = (int)cboSize.SelectedValue;
-                    int cId = (int)cboMauSac.SelectedValue;
-
-                    var variant = _productController.GetVariantsByProductId(pId)
-                                                    .FirstOrDefault(v => v.SizeId == sId && v.ColorId == cId && v.IsActive == true);
-                    if (variant != null)
-                    {
-                        // 👉 1. KIỂM TRA TỒN KHO TRƯỚC KHI CHO SỬA
-                        int tonKho = variant.Quantity;
-                        int slDaCoTrongGio = 0;
-
-                        // Tính tổng số lượng của biến thể này đang nằm rải rác trong giỏ 
-                        // (ngoại trừ cái dòng mà mình đang thao tác sửa)
-                        foreach (DataRow r in dtGioHang.Rows)
-                        {
-                            if (dtGioHang.Rows.IndexOf(r) != rowIndex && Convert.ToInt32(r["IdVariant"]) == variant.Id)
-                            {
-                                slDaCoTrongGio += Convert.ToInt32(r["SoLuong"]);
-                            }
-                        }
-
-                        // Nếu số lượng mới nhập + số lượng cũ ở các dòng khác > Tồn kho => Chặn lại
-                        if (slDaCoTrongGio + slMoi > tonKho)
-                        {
-                            MessageBox.Show($"Tồn kho không đủ! Sản phẩm này hiện chỉ còn {tonKho} chiếc\n(Bạn đã có {slDaCoTrongGio} chiếc ở dòng khác trong giỏ hàng).", "Hết hàng", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            return; // Dừng lập tức, không cho cập nhật
-                        }
-
-                        // 👉 2. CẬP NHẬT DỮ LIỆU NẾU KHO ĐỦ ĐÁP ỨNG
-                        dtGioHang.Rows[rowIndex]["IdVariant"] = variant.Id;
-                        dtGioHang.Rows[rowIndex]["Size"] = cboSize.Text;
-                        dtGioHang.Rows[rowIndex]["Mau"] = cboMauSac.Text;
-                        dtGioHang.Rows[rowIndex]["DonGia"] = variant.SellingPrice;
-                    }
-                    else
-                    {
-                        MessageBox.Show("Phiên bản (Size/Màu) này đã hết hoặc không tồn tại!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Vui lòng chọn đầy đủ thông tin Sản phẩm, Size và Màu sắc trên thanh chọn để tiến hành sửa!", "Nhắc nhở", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                // 👉 3. CHỐT SỐ LƯỢNG VÀ TÍNH LẠI TIỀN
-                dtGioHang.Rows[rowIndex]["SoLuong"] = slMoi;
-                TinhTongTien();
-
-                MessageBox.Show("Đã cập nhật thông tin sản phẩm thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else
-            {
-                MessageBox.Show("Vui lòng chọn một dòng sản phẩm trong giỏ hàng để sửa!", "Nhắc nhở", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
-
-        private void btnXoa_Click(object sender, EventArgs e)
-        {
-            if (dgvGioHang.CurrentRow != null)
-            {
-                dtGioHang.Rows.RemoveAt(dgvGioHang.CurrentRow.Index);
-                TinhTongTien();
-            }
-        }
-
-        private void dgvGioHang_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex >= 0)
-            {
-                string tenSP = dgvGioHang.Rows[e.RowIndex].Cells["TenSP"].Value.ToString();
-                cboSanPham.SelectedIndex = cboSanPham.FindStringExact(tenSP);
-
-                nmSoLuong.Value = Convert.ToInt32(dgvGioHang.Rows[e.RowIndex].Cells["SoLuong"].Value);
-            }
-        }
-
         private void btnLamMoi_Click(object sender, EventArgs e)
         {
             dtGioHang.Rows.Clear();
@@ -498,6 +611,8 @@ namespace SportShop.View
             txtSoDienThoai.Clear();
             txtDiaChi.Clear();
             txtVoucher.Clear();
+
+            ResetDiemLoyalty();
 
             if (cboPhuongThucThanhToan != null) cboPhuongThucThanhToan.SelectedIndex = 0;
 
@@ -560,7 +675,12 @@ namespace SportShop.View
                     report.SetParameterValue("SoDienThoai", sdtKH);
                     report.SetParameterValue("DiaChi", diaChiKH);
                     report.SetParameterValue("NgayIn", DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
-                    report.SetParameterValue("TongTien", tongTienBang);
+
+                    // Trừ đi cả số tiền đổi từ điểm Loyalty khi in hóa đơn
+                    double tongCuoi = tongTienBang - Convert.ToDouble(_tienGiamTuDiem);
+                    if (tongCuoi < 0) tongCuoi = 0;
+
+                    report.SetParameterValue("TongTien", tongCuoi);
 
                     report.Prepare();
 

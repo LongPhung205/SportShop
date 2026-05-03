@@ -36,14 +36,14 @@ namespace SportShop.Controller
         public bool AddCustomer(Customer customer)
         {
             const string sql = @"
-                INSERT INTO Customer (Name, Phone, Email, Address, LoyaltyPoints) 
-                VALUES (@name, @phone, @email, @address, @loyaltyPoints)";
+                INSERT INTO Customer (Name, Phone, Address, LoyaltyPoints) 
+                VALUES (@name, @phone, @address, @loyaltyPoints)";
 
             var parameters = new[]
             {
                 new SqlParameter("@name", SqlDbType.NVarChar, 255) { Value = customer.Name },
                 new SqlParameter("@phone", SqlDbType.NVarChar, 20) { Value = (object)customer.Phone ?? DBNull.Value },
-                new SqlParameter("@email", SqlDbType.NVarChar, 100) { Value = (object)customer.Email ?? DBNull.Value },
+                
                 new SqlParameter("@address", SqlDbType.NVarChar, 500) { Value = (object)customer.Address ?? DBNull.Value },
                 new SqlParameter("@loyaltyPoints", SqlDbType.Int) { Value = customer.LoyaltyPoints ?? 0 }
             };
@@ -56,7 +56,7 @@ namespace SportShop.Controller
         {
             const string sql = @"
                 UPDATE Customer 
-                SET Name = @name, Phone = @phone, Email = @email, Address = @address, LoyaltyPoints = @loyaltyPoints 
+                SET Name = @name, Phone = @phone, Address = @address, LoyaltyPoints = @loyaltyPoints 
                 WHERE Id = @id";
 
             var parameters = new[]
@@ -64,7 +64,7 @@ namespace SportShop.Controller
                 new SqlParameter("@id", SqlDbType.Int) { Value = customer.Id },
                 new SqlParameter("@name", SqlDbType.NVarChar, 255) { Value = customer.Name },
                 new SqlParameter("@phone", SqlDbType.NVarChar, 20) { Value = (object)customer.Phone ?? DBNull.Value },
-                new SqlParameter("@email", SqlDbType.NVarChar, 100) { Value = (object)customer.Email ?? DBNull.Value },
+              
                 new SqlParameter("@address", SqlDbType.NVarChar, 500) { Value = (object)customer.Address ?? DBNull.Value },
                 new SqlParameter("@loyaltyPoints", SqlDbType.Int) { Value = customer.LoyaltyPoints ?? 0 }
             };
@@ -173,6 +173,35 @@ namespace SportShop.Controller
 
             return DBConnection.ExecuteNonQuery(sql, parameters) > 0;
         }
+        // Hàm trừ điểm tích lũy của khách hàng khi thanh toán
+        public bool DeductLoyaltyPoints(int customerId, int pointsToDeduct)
+        {
+            // Câu lệnh SQL: Trừ điểm, nếu số điểm trừ lớn hơn số điểm hiện có thì set về 0 (chống âm điểm)
+            string sql = @"
+        UPDATE Customer 
+        SET LoyaltyPoints = CASE 
+                                WHEN LoyaltyPoints >= @points THEN LoyaltyPoints - @points 
+                                ELSE 0 
+                            END 
+        WHERE Id = @id";
+
+            // Truyền tham số
+            var parameters = new[]
+            {
+        new System.Data.SqlClient.SqlParameter("@points", pointsToDeduct),
+        new System.Data.SqlClient.SqlParameter("@id", customerId)
+    };
+
+            try
+            {
+                // Sử dụng hàm ExecuteNonQuery từ class DBConnection của bạn
+                return DataBase.DBConnection.ExecuteNonQuery(sql, parameters) > 0;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi khi trừ điểm khách hàng: " + ex.Message);
+            }
+        }
 
 
         // ==========================================
@@ -188,7 +217,7 @@ namespace SportShop.Controller
                     Id = Convert.ToInt32(row["Id"]),
                     Name = row["Name"].ToString(),
                     Phone = row["Phone"] == DBNull.Value ? "" : row["Phone"].ToString(),
-                    Email = row["Email"] == DBNull.Value ? "" : row["Email"].ToString(),
+                    
                     Address = row["Address"] == DBNull.Value ? "" : row["Address"].ToString(),
                     LoyaltyPoints = row["LoyaltyPoints"] == DBNull.Value ? 0 : Convert.ToInt32(row["LoyaltyPoints"]),
                     CreatedAt = row["CreatedAt"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(row["CreatedAt"])
