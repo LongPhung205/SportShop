@@ -313,6 +313,51 @@ namespace SportShop.Controller
             }
             return list;
         }
+        public List<ImportOrder> FilterImportOrders(
+    DateTime fromDate,
+    DateTime toDate,
+    string status = "COMPLETED")
+        {
+            string sql = @"
+        SELECT io.Id, io.SupplierId, s.Name AS SupplierName,
+               io.UserId, u.FullName AS UserName,
+               io.ImportDate, io.TotalAmount,
+               io.Notes, io.Status
+        FROM ImportOrder io
+        LEFT JOIN Supplier s ON io.SupplierId = s.Id
+        LEFT JOIN [User] u ON io.UserId = u.Id
+        WHERE CAST(io.ImportDate AS DATE) 
+              BETWEEN @fromDate AND @toDate";
+
+            List<SqlParameter> parameters = new List<SqlParameter>();
+
+            parameters.Add(new SqlParameter("@fromDate", SqlDbType.Date)
+            {
+                Value = fromDate.Date
+            });
+
+            parameters.Add(new SqlParameter("@toDate", SqlDbType.Date)
+            {
+                Value = toDate.Date
+            });
+
+            // Chỉ lọc status nếu có truyền vào
+            if (!string.IsNullOrEmpty(status))
+            {
+                sql += " AND io.Status = @status";
+
+                parameters.Add(new SqlParameter("@status", SqlDbType.NVarChar)
+                {
+                    Value = status
+                });
+            }
+
+            sql += " ORDER BY io.Id DESC";
+
+            DataTable dt = DBConnection.GetDataTable(sql, parameters.ToArray());
+
+            return ConvertToImportOrderList(dt);
+        }
 
         // ==========================================
         // HÀM HELPER

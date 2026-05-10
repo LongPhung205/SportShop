@@ -17,6 +17,7 @@ namespace SportShop.View
         private decimal giamGia = 0;
         private int _sanPhamDuocChon = -1;
         private int phanTramGiam = 0;
+        private int? _appliedVoucherId = null;
         private decimal tongTienTruocGiam = 0;
 
         // --- CÁC BIẾN CHO ĐIỂM LOYALTY ---
@@ -154,7 +155,7 @@ namespace SportShop.View
 
             // Chốt số điểm dùng và chạy hàm tính tiền
             _diemSuDung = (int)nmDiemSuDung.Value;
-            _tienGiamTuDiem = _diemSuDung * 100;
+            _tienGiamTuDiem = _diemSuDung * 1000;
             TinhTongTien();
         }
 
@@ -162,11 +163,22 @@ namespace SportShop.View
         {
             if (_diemKhachHangHienTai > 0)
             {
-                nmDiemSuDung.Value = _diemKhachHangHienTai;
+                // Lấy đúng số tiền sau khi đã trừ Voucher
+                decimal tongSauVoucher = tongTienTruocGiam - (tongTienTruocGiam * phanTramGiam / 100);
 
-                // Tự động kích hoạt luôn tính tiền khi bấm Dùng All cho nhanh
-                _diemSuDung = _diemKhachHangHienTai;
+                // Tính số điểm tối đa cần thiết để thanh toán đủ hóa đơn
+                int maxDiemCanDung = (int)Math.Ceiling(tongSauVoucher / 1000);
+
+                // Nếu số điểm khách có ít hơn mức cần thiết -> Xài sạch điểm của khách
+                // Nếu số điểm khách có dư sức trả -> Chỉ xài bằng đúng maxDiemCanDung
+                if (maxDiemCanDung > _diemKhachHangHienTai)
+                    maxDiemCanDung = _diemKhachHangHienTai;
+
+                // Cập nhật lại UI và Biến
+                nmDiemSuDung.Value = maxDiemCanDung;
+                _diemSuDung = maxDiemCanDung;
                 _tienGiamTuDiem = _diemSuDung * 1000;
+
                 TinhTongTien();
             }
             else
@@ -174,7 +186,6 @@ namespace SportShop.View
                 MessageBox.Show("Khách hàng hiện chưa có điểm tích lũy nào!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
-
         // =======================================================
         // CÁC HÀM XỬ LÝ SẢN PHẨM & GIỎ HÀNG NHƯ CŨ
         // =======================================================
@@ -404,80 +415,158 @@ namespace SportShop.View
         // =======================================================
         // TÍNH TOÁN TIỀN (GỘP CẢ VOUCHER VÀ ĐIỂM LOYALTY)
         // =======================================================
+        // =======================================================
+        // THUẬT TOÁN TÍNH TIỀN (ÁP VOUCHER -> ĐIỂM -> PHÂN BỔ LÊN LƯỚI)
+        // =======================================================
         private void TinhTongTien()
         {
-            decimal tongGiamGiaVoucher = 0;
-            decimal tongTienSauGiamVoucher = 0;
-            tongTienTruocGiam = 0;
-
             dgvGioHang.SuspendLayout();
 
+            // BƯỚC 1: TÍNH TỔNG TIỀN GỐC CỦA ĐƠN HÀNG
+            tongTienTruocGiam = 0;
             foreach (DataRow r in dtGioHang.Rows)
             {
                 decimal donGia = Convert.ToDecimal(r["DonGia"]);
                 int soLuong = Convert.ToInt32(r["SoLuong"]);
+                tongTienTruocGiam += (donGia * soLuong);
+            }
 
+            // BƯỚC 2: ÁP VOUCHER (Tính trên tổng tiền)
+            giamGia = tongTienTruocGiam * phanTramGiam / 100;
+
+            // BƯỚC 3: TIỀN SAU VOUCHER
+            decimal tongTienSauVoucher = tongTienTruocGiam - giamGia;
+
+            // BƯỚC 4: TRỪ ĐIỂM LOYALTY (Giới hạn tối đa bằng tiền sau voucher)
+            if (_tienGiamTuDiem > tongTienSauVoucher)
+            {
+                // Tránh lỗi khi khách dùng nhiều điểm hơn tiền cần trả
+                nmDiemSuDung.Value = Math.Ceiling(tongTienSauVoucher / 1000);
+                _diemSuDung = (int)nmDiemSuDung.Value;
+                _tienGiamTuDiem = _diemSuDung * 1000;
+            }
+
+            // TỔNG CỘNG TẤT CẢ TIỀN GIẢM GÓI GỌN LẠI
+            decimal tongTatCaGiamGia = giamGia + _tienGiamTuDiem;
+            if (tongTatCaGiamGia > tongTienTruocGiam) tongTatCaGiamGia = tongTienTruocGiam;
+
+            // BƯỚC 5: THUẬT TOÁN PHÂN BỔ (PRORATION) - Chia đều tiền giảm lên lưới
+            decimal giamGiaDaPhanBo = 0;
+
+            for (int i = 0; i < dtGioHang.Rows.Count; i++)
+            {
+                DataRow r = dtGioHang.Rows[i];
+                decimal donGia = Convert.ToDecimal(r["DonGia"]);
+                int soLuong = Convert.ToInt32(r["SoLuong"]);
                 decimal tienGoc = donGia * soLuong;
-                tongTienTruocGiam += tienGoc;
 
-                decimal giamGiaMon = tienGoc * phanTramGiam / 100;
+                decimal giamGiaMon = 0;
+
+                if (tongTienTruocGiam > 0)
+                {
+                    // Món cuối cùng sẽ gánh toàn bộ số lẻ còn dư để khớp 100% không lệch 1 đồng
+                    if (i == dtGioHang.Rows.Count - 1)
+                    {
+                        giamGiaMon = tongTatCaGiamGia - giamGiaDaPhanBo;
+                    }
+                    else
+                    {
+                        // Chia tỷ lệ thuận theo giá trị món hàng
+                        giamGiaMon = Math.Round((tienGoc / tongTienTruocGiam) * tongTatCaGiamGia);
+                    }
+                }
+
+                // Chặn an toàn không cho giảm quá tiền gốc của món
+                if (giamGiaMon > tienGoc) giamGiaMon = tienGoc;
+                if (giamGiaMon < 0) giamGiaMon = 0;
+
                 decimal thanhTien = tienGoc - giamGiaMon;
 
+                // Cập nhật CỘT GIẢM GIÁ và THÀNH TIỀN hiển thị ngay lập tức lên lưới
                 r.BeginEdit();
                 r["GiamGia"] = giamGiaMon;
                 r["ThanhTien"] = thanhTien;
                 r.EndEdit();
 
-                tongGiamGiaVoucher += giamGiaMon;
-                tongTienSauGiamVoucher += thanhTien;
+                giamGiaDaPhanBo += giamGiaMon;
             }
 
             dtGioHang.AcceptChanges();
             dgvGioHang.ResumeLayout();
             dgvGioHang.Refresh();
 
-            giamGia = tongGiamGiaVoucher;
-
-            // Xử lý cấn trừ điểm để không bị âm tiền
-            if (_tienGiamTuDiem > tongTienSauGiamVoucher)
-            {
-                // Chỉ cho phép dùng tối đa điểm bằng đúng số tiền đơn hàng
-                nmDiemSuDung.Value = Math.Ceiling(tongTienSauGiamVoucher / 1000);
-                _tienGiamTuDiem = nmDiemSuDung.Value * 1000;
-            }
-
-            decimal tongCuoiCung = tongTienSauGiamVoucher - _tienGiamTuDiem;
+            // BƯỚC 6: CHỐT TIỀN CUỐI VÀ CẬP NHẬT LABEL GIAO DIỆN
+            decimal tongCuoiCung = tongTienTruocGiam - tongTatCaGiamGia;
             if (tongCuoiCung < 0) tongCuoiCung = 0;
 
-            // Update Label hiển thị
             string txtGiamGia = $"Voucher ({phanTramGiam}%): -{giamGia:N0} ₫\nTừ điểm: -{_tienGiamTuDiem:N0} ₫";
             lblGiamGia.Text = txtGiamGia;
 
             lblTongTien.Text = "TỔNG: " + tongCuoiCung.ToString("N0") + " ₫";
         }
 
-        private void txtMaVoucher_Click(object sender, EventArgs e)
+        private void txtMaVoucher_Click(object sender, EventArgs e) // Lưu ý: Hàm này dùng cho nút "Áp dụng Voucher"
         {
             string ma = txtVoucher.Text.Trim();
 
+            // Trường hợp 1: Ô text trống -> Hiểu là muốn hủy áp mã
             if (string.IsNullOrEmpty(ma))
             {
                 phanTramGiam = 0;
+                _appliedVoucherId = null; // Xóa sạch ID voucher đang lưu
                 TinhTongTien();
                 MessageBox.Show("Đã hủy áp mã Voucher!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            Voucher validVoucher = _voucherController.GetValidVoucherToApply(ma, tongTienTruocGiam);
+            // =========================================================
+            // 👉 ĐÃ FIX: CHỐT CHẶN BẮT BUỘC PHẢI NHẬP SĐT KHÁCH HÀNG
+            // =========================================================
+            string sdt = txtSoDienThoai.Text.Trim();
+            if (string.IsNullOrEmpty(sdt))
+            {
+                MessageBox.Show("Vui lòng nhập Số điện thoại khách hàng trước khi áp dụng Voucher!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                // Trả lại trạng thái ban đầu
+                txtVoucher.Clear();
+                phanTramGiam = 0;
+                _appliedVoucherId = null;
+                TinhTongTien();
+
+                // Đưa con trỏ chuột về ô Số điện thoại để nhắc nhân viên nhập
+                txtSoDienThoai.Focus();
+                return; // Dừng luôn, không cho check mã bên dưới
+            }
+
+            // =========================================================
+            // Lấy ID Khách hàng từ ô Số Điện Thoại
+            // =========================================================
+            int? currentCustomerId = null;
+
+            // Tận dụng lại hàm tìm khách hàng bằng SĐT của bạn
+            var customers = _customerController.SearchCustomers(sdt);
+            if (customers.Count > 0)
+            {
+                // Khách có tồn tại -> Lấy ID của khách đó
+                currentCustomerId = customers[0].Id;
+            }
+
+            // 👉 Truyền currentCustomerId vào để check số lượt khách đã dùng
+            Voucher validVoucher = _voucherController.GetValidVoucherToApply(ma, tongTienTruocGiam, currentCustomerId);
 
             if (validVoucher == null)
             {
                 phanTramGiam = 0;
-                MessageBox.Show("Mã giảm giá không hợp lệ, đã hết hạn, hoặc đơn hàng chưa đạt giá trị tối thiểu!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                _appliedVoucherId = null; // Hủy ID vì mã sai hoặc hết lượt
+                MessageBox.Show("Mã giảm giá không hợp lệ, đã hết hạn, chưa đạt giá trị tối thiểu, hoặc khách hàng này đã dùng quá số lần cho phép!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
                 phanTramGiam = validVoucher.DiscountPercent;
+
+                // 👉 Lưu lại ID của Voucher để lúc Thanh toán chèn vào Database
+                _appliedVoucherId = validVoucher.Id;
+
                 MessageBox.Show($"Áp mã thành công! Đơn hàng được giảm {phanTramGiam}%.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
@@ -495,8 +584,23 @@ namespace SportShop.View
                 return;
             }
 
+            // =========================================================
+            // 👉 ĐÃ FIX: CHỐT CHẶN BẮT BUỘC NHẬP TÊN KHÁCH HÀNG
+            // =========================================================
+            if (!string.IsNullOrEmpty(txtSoDienThoai.Text.Trim()))
+            {
+                string ten = txtTenKhachHang.Text.Trim();
+                if (string.IsNullOrEmpty(ten) || ten == "Khách vãng lai")
+                {
+                    MessageBox.Show("Đã nhập Số Điện Thoại thì bắt buộc phải nhập Tên Khách Hàng để lưu hệ thống!", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtTenKhachHang.Focus();
+                    return; // Dừng luôn, không cho thanh toán
+                }
+            }
+
             try
             {
+                // 1. Kiểm tra tính hợp lệ của giỏ hàng
                 foreach (DataRow r in dtGioHang.Rows)
                 {
                     if (Convert.ToInt32(r["IdVariant"]) == 0)
@@ -506,6 +610,7 @@ namespace SportShop.View
                     }
                 }
 
+                // 2. Xử lý thông tin Khách hàng
                 int? customerId = null;
                 string sdt = txtSoDienThoai.Text.Trim();
 
@@ -518,7 +623,8 @@ namespace SportShop.View
                     }
                     else
                     {
-                        string tenKH = string.IsNullOrWhiteSpace(txtTenKhachHang.Text) ? "Khách vãng lai" : txtTenKhachHang.Text.Trim();
+                        // Vì đã bị chặn ở trên, nên xuống tới đây chắc chắn txtTenKhachHang.Text đã có tên thật của khách
+                        string tenKH = txtTenKhachHang.Text.Trim();
                         string diaChi = string.IsNullOrWhiteSpace(txtDiaChi.Text) ? "" : txtDiaChi.Text.Trim();
 
                         Customer newCus = new Customer { Name = tenKH, Phone = sdt, Address = diaChi };
@@ -530,13 +636,14 @@ namespace SportShop.View
                     }
                 }
 
+                // 3. Chuẩn bị dữ liệu Hóa đơn
                 int currentUserId = UserSession.CurrentUser != null ? UserSession.CurrentUser.Id : 1;
                 string phuongThucThanhToan = cboPhuongThucThanhToan != null && cboPhuongThucThanhToan.SelectedItem != null
                     ? cboPhuongThucThanhToan.SelectedItem.ToString()
                     : "Tiền mặt";
 
                 decimal tongTruocVoucher = tongTienTruocGiam;
-                decimal tongDuocGiamGia = giamGia + _tienGiamTuDiem; // Gộp cả giảm voucher + giảm từ điểm
+                decimal tongDuocGiamGia = giamGia + _tienGiamTuDiem;
                 decimal tongPhaiTra = tongTienTruocGiam - tongDuocGiamGia;
                 if (tongPhaiTra < 0) tongPhaiTra = 0;
 
@@ -563,35 +670,40 @@ namespace SportShop.View
                     });
                 }
 
-                if (_orderController.AddOrder(newOrder, details))
-                {
-                    MessageBox.Show("Thanh toán thành công! Hóa đơn đã được lưu.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // 4. 👉 ĐÃ FIX: TRUYỀN THÊM BIẾN _appliedVoucherId VÀO ĐỂ GHI LỊCH SỬ DÙNG MÃ
+                int newOrderId = _orderController.AddOrder(newOrder, details, _appliedVoucherId);
 
-                    var result = MessageBox.Show("Bạn có muốn in hóa đơn không?", "In Hóa Đơn", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                    if (result == DialogResult.Yes)
+                if (newOrderId > 0)
+                {
+                    MessageBox.Show($"Thanh toán thành công!\nMã hóa đơn của bạn là: HD{newOrderId:D5}", "Hoàn tất", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    // 5. Hỏi in hóa đơn và truyền mã ID vào bill
+                    if (MessageBox.Show("Bạn có muốn in hóa đơn không?", "In Hóa Đơn", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     {
-                        btnXuatHoaDon_Click(null, null);
+                        InHoaDon(newOrderId);
                     }
 
-                    // XỬ LÝ KHÁCH HÀNG THÂN THIẾT SAU KHI MUA THÀNH CÔNG
+                    // 6. Xử lý sau mua (Trừ điểm, Cộng điểm, Tăng lượt dùng Voucher)
                     if (customerId.HasValue)
                     {
-                        // 1. Trừ số điểm khách đã lấy ra xài
                         if (_diemSuDung > 0)
                         {
-                            // YÊU CẦU: Bạn cần có hàm DeductLoyaltyPoints trong _customerController
                             _customerController.DeductLoyaltyPoints(customerId.Value, _diemSuDung);
                         }
-                        // 2. Cộng điểm tích lũy mới (Dựa trên số tiền mặt khách trả thực tế)
                         _customerController.AddLoyaltyPoints(customerId.Value, tongPhaiTra);
                     }
 
-                    if (!string.IsNullOrWhiteSpace(txtVoucher.Text))
+                    // 👉 ĐÃ FIX: Nếu thực sự có Voucher được áp dụng thì mới tăng lượt sử dụng
+                    if (_appliedVoucherId.HasValue && !string.IsNullOrWhiteSpace(txtVoucher.Text))
                     {
                         _voucherController.IncreaseVoucherUsage(txtVoucher.Text.Trim());
                     }
 
+                    // 7. Reset giao diện
                     btnLamMoi_Click(sender, e);
+
+                    // Xóa biến ID Voucher sau khi thanh toán xong
+                    _appliedVoucherId = null;
                 }
                 else
                 {
@@ -623,6 +735,11 @@ namespace SportShop.View
         }
 
         private void btnXuatHoaDon_Click(object sender, EventArgs e)
+        {
+            // Truyền 0 vào hàm để hiểu là in bản nháp, chưa có mã
+            InHoaDon(0);
+        }
+        private void InHoaDon(int maHoaDon)
         {
             if (dtGioHang.Rows.Count == 0)
             {
@@ -660,7 +777,6 @@ namespace SportShop.View
                             double thanhTien = Convert.ToDouble(r["ThanhTien"]);
 
                             dtReport.Rows.Add(stt, ten, mau, size, sl, gia, giamGiaMon, thanhTien);
-
                             tongTienBang += thanhTien;
                             stt++;
                         }
@@ -671,15 +787,17 @@ namespace SportShop.View
                     string sdtKH = string.IsNullOrWhiteSpace(txtSoDienThoai.Text) ? "(Không có)" : txtSoDienThoai.Text.Trim();
                     string diaChiKH = string.IsNullOrWhiteSpace(txtDiaChi.Text) ? "(Không có)" : txtDiaChi.Text.Trim();
 
+                    // Xử lý logic Mã Hóa Đơn
+                    string maHDString = maHoaDon > 0 ? "HD" + maHoaDon.ToString("D5") : "BẢN NHÁP (DRAFT)";
+                    report.SetParameterValue("MaHoaDon", maHDString);
+
                     report.SetParameterValue("TenKhachHang", tenKH);
                     report.SetParameterValue("SoDienThoai", sdtKH);
                     report.SetParameterValue("DiaChi", diaChiKH);
                     report.SetParameterValue("NgayIn", DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
 
-                    // Trừ đi cả số tiền đổi từ điểm Loyalty khi in hóa đơn
-                    double tongCuoi = tongTienBang - Convert.ToDouble(_tienGiamTuDiem);
+                    double tongCuoi = tongTienBang;
                     if (tongCuoi < 0) tongCuoi = 0;
-
                     report.SetParameterValue("TongTien", tongCuoi);
 
                     report.Prepare();
@@ -689,17 +807,13 @@ namespace SportShop.View
 
                     report.Export(pdfExport, pdfFileName);
 
-                    ProcessStartInfo psi = new ProcessStartInfo
-                    {
-                        FileName = pdfFileName,
-                        UseShellExecute = true
-                    };
+                    ProcessStartInfo psi = new ProcessStartInfo { FileName = pdfFileName, UseShellExecute = true };
                     Process.Start(psi);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi cấu hình in báo cáo: " + ex.Message + "\n\n(Lưu ý: Bạn cần có file template 'HoaDon.frx' ở thư mục build để in)", "Lỗi in", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lỗi cấu hình in báo cáo: " + ex.Message + "\n\n(Lưu ý: Bạn cần tạo Parameter 'MaHoaDon' trong file HoaDon.frx)", "Lỗi in", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

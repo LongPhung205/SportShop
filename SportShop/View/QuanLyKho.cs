@@ -297,5 +297,48 @@ namespace SportShop.View
             LoadDataTonKho();
             LoadDataPhieuNhap();
         }
+
+        private void btnLoc_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DateTime fromDate = dtpTuNgay.Value.Date;
+                DateTime toDate = dtpDenNgay.Value.Date;
+
+                // KIỂM TRA NGÀY
+                if (fromDate > toDate)
+                {
+                    MessageBox.Show(
+                        "Từ ngày không được lớn hơn Đến ngày!",
+                        "Cảnh báo",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                }
+
+                // Chỉ lấy phiếu COMPLETED
+                var list = _khoController.FilterImportOrders(
+                    fromDate,
+                    toDate,
+                    "COMPLETED"
+                );
+
+                DataGridView dgvPhieuNhap =
+                    (DataGridView)this.Controls.Find("dgvPhieuNhap", true)[0];
+
+                dgvPhieuNhap.DataSource = list;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "Lỗi lọc phiếu nhập: " + ex.Message,
+                    "Lỗi",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+            }
+        }
     }
 }

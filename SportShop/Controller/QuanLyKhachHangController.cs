@@ -156,7 +156,7 @@ namespace SportShop.Controller
             return 0m;
         }
 
-        // 9. TỰ ĐỘNG CỘNG ĐIỂM KHI THANH TOÁN (Ví dụ: 10,000đ = 1 điểm)
+        // 9. TỰ ĐỘNG CỘNG ĐIỂM KHI THANH TOÁN 
         public bool AddLoyaltyPoints(int customerId, decimal orderTotalAmount)
         {
             // Tỷ lệ quy đổi: 10,000đ = 1 điểm. Bạn có thể sửa con số 10000 này theo ý muốn.

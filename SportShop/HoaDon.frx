@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Report ScriptLanguage="CSharp" ReportInfo.Created="04/21/2026 19:35:23" ReportInfo.Modified="04/27/2026 22:17:28" ReportInfo.CreatorVersion="2026.2.0.0">
   <Dictionary>
     <TableDataSource Name="Data" ReferenceName="Data" DataType="System.Int32" Enabled="true">
@@ -16,10 +16,16 @@
     <Parameter Name="DiaChi" DataType="System.String" AsString=""/>
     <Parameter Name="NgayIn" DataType="System.String" AsString=""/>
     <Parameter Name="TongTien" DataType="System.Double" AsString=""/>
+    <!-- ĐÃ THÊM BIẾN MÃ HÓA ĐƠN -->
+    <Parameter Name="MaHoaDon" DataType="System.String" AsString=""/>
   </Dictionary>
   <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
     <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="220">
-      <TextObject Name="lblHoaDonBanHang" Left="378" Top="9.45" Width="300" Height="28.35" Text="HÓA ĐƠN BÁN HÀNG" Font="Arial, 18pt, style=Bold" TextFill.Color="Firebrick"/>
+      <TextObject Name="lblHoaDonBanHang" Left="378" Top="9.45" Width="300" Height="28.35" Text="HÓA ĐƠN BÁN HÀNG" Font="Arial, 18pt, style=Bold" TextFill.Color="Firebrick" HorzAlign="Center"/>
+      
+      <!-- ĐÃ HIỂN THỊ MÃ HÓA ĐƠN Ở ĐÂY -->
+      <TextObject Name="txtMaHoaDon" Left="378" Top="38" Width="300" Height="20" Text="[MaHoaDon]" Font="Arial, 11pt, style=Bold" HorzAlign="Center"/>
+
       <TextObject Name="lblTenCongty" Left="9.45" Top="9.45" Width="368.55" Height="28.35" Text="Công Ty TNHH VELOCIUM" Font="Arial, 16pt, style=Bold" TextFill.Color="DarkBlue"/>
       <TextObject Name="lblDiaChi" Left="9.45" Top="45" Width="60" Height="20" Text="Địa chỉ:" Font="Arial, 10pt, style=Bold"/>
       <TextObject Name="txtDiaChi" Left="70" Top="45" Width="300" Height="20" Text="41A đường Phú Diễn, P. Phú Diễn, Hà Nội" Font="Arial, 10pt"/>
@@ -27,16 +33,20 @@
       <TextObject Name="txtDienThoai" Left="118.9" Top="65" Width="200" Height="20" Text="0378 203 598" Font="Arial, 10pt"/>
       <TextObject Name="lblEmail" Left="9.45" Top="85" Width="50" Height="20" Text="Email:" Font="Arial, 10pt, style=Bold"/>
       <TextObject Name="txtEmail" Left="60" Top="85" Width="200" Height="20" Text="velocium@gmail.com" Font="Arial, 10pt"/>
-      <TextObject Name="Text5" Left="378" Top="45" Width="340" Height="20" Text="Chuyên Cung Cấp Đồ Thể Thao Chất Lượng" Font="Arial, 10pt, style=Italic"/>
-      <TextObject Name="Text6" Left="378" Top="65" Width="340" Height="20" Text="Uy Tín - Bảo Hành Trọn Đời - Giá Rẻ" Font="Arial, 10pt, style=Italic"/>
-      <TextObject Name="txtNgayIn" Left="378" Top="85" Width="340" Height="20" Text="Ngày in: [NgayIn]" Font="Arial, 10pt"/>
-      <LineObject Name="Line1" Left="9.45" Top="115" Width="698.75" Border.Color="DimGray" Border.Width="2"/>
-      <TextObject Name="Text11" Left="9.45" Top="130" Width="94.5" Height="20" Text="Khách hàng:" Font="Arial, 10pt, style=Bold"/>
-      <TextObject Name="txtTenKhachHang" Left="100" Top="130" Width="260" Height="20" Text="[TenKhachHang]" Font="Arial, 10pt"/>
-      <TextObject Name="lblSoDienThoaiKhach" Left="378" Top="130" Width="103.95" Height="20" Text="Số điện thoại:" Font="Arial, 10pt, style=Bold"/>
-      <TextObject Name="txtSoDienThoaiKhach" Left="480" Top="130" Width="200" Height="20" Text="[SoDienThoai]" Font="Arial, 10pt"/>
-      <TextObject Name="lblDiaChiKhach" Left="9.45" Top="155" Width="94.5" Height="20" Text="Địa Chỉ:" Font="Arial, 10pt, style=Bold"/>
-      <TextObject Name="Text13" Left="100" Top="155" Width="600" Height="20" Text="[DiaChi]" Font="Arial, 10pt"/>
+      
+      <!-- Căn giữa (HorzAlign="Center") và nhích Top xuống một chút cho đỡ vướng Mã HĐ -->
+      <TextObject Name="Text5" Left="378" Top="60" Width="300" Height="20" Text="Chuyên Cung Cấp Đồ Thể Thao Chất Lượng" Font="Arial, 10pt, style=Italic" HorzAlign="Center"/>
+      <TextObject Name="Text6" Left="378" Top="80" Width="300" Height="20" Text="Uy Tín - Bảo Hành Trọn Đời - Giá Rẻ" Font="Arial, 10pt, style=Italic" HorzAlign="Center"/>
+      <TextObject Name="txtNgayIn" Left="378" Top="100" Width="300" Height="20" Text="Ngày in: [NgayIn]" Font="Arial, 10pt" HorzAlign="Center"/>
+      
+      <!-- Tịnh tiến thông tin khách hàng xuống dưới -->
+      <LineObject Name="Line1" Left="9.45" Top="125" Width="698.75" Border.Color="DimGray" Border.Width="2"/>
+      <TextObject Name="Text11" Left="9.45" Top="140" Width="94.5" Height="20" Text="Khách hàng:" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="txtTenKhachHang" Left="100" Top="140" Width="260" Height="20" Text="[TenKhachHang]" Font="Arial, 10pt"/>
+      <TextObject Name="lblSoDienThoaiKhach" Left="378" Top="140" Width="103.95" Height="20" Text="Số điện thoại:" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="txtSoDienThoaiKhach" Left="480" Top="140" Width="200" Height="20" Text="[SoDienThoai]" Font="Arial, 10pt"/>
+      <TextObject Name="lblDiaChiKhach" Left="9.45" Top="165" Width="94.5" Height="20" Text="Địa Chỉ:" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text13" Left="100" Top="165" Width="600" Height="20" Text="[DiaChi]" Font="Arial, 10pt"/>
     </ReportTitleBand>
     <PageHeaderBand Name="PageHeader1" Top="224" Width="718.2" Height="30" Fill.Color="LightGray">
       <TextObject Name="hSTT" Width="40" Height="30" Border.Lines="All" Text="STT" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>

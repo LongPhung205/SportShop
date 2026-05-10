@@ -44,8 +44,11 @@ namespace SportShop.Controller
             return list.Count > 0 ? list[0] : null;
         }
 
-        // 3. THÊM HÓA ĐƠN (ĐÃ FIX: Bổ sung Subtotal và TotalAmount)
-        public bool AddOrder(Order order, List<OrderDetail> orderDetails)
+        // 3. THÊM HÓA ĐƠN 
+
+        // 3. THÊM HÓA ĐƠN 
+        // 👉 ĐÃ FIX: Thêm tham số appliedVoucherId để lưu vào bảng OrderVoucher
+        public int AddOrder(Order order, List<OrderDetail> orderDetails, int? appliedVoucherId = null)
         {
             using (SqlConnection conn = DBConnection.GetDBConnection())
             {
@@ -56,9 +59,9 @@ namespace SportShop.Controller
                     {
                         // 3.1 Thêm Hóa đơn và lấy Id vừa tạo
                         const string sqlOrder = @"
-                            INSERT INTO Orders (CustomerId, UserId, OrderDate, Subtotal, DiscountAmount, TotalAmount, PaymentMethod, Notes) 
-                            OUTPUT INSERTED.Id 
-                            VALUES (@cid, @uid, @date, @subtotal, @discount, @total, @payment, @notes)";
+            INSERT INTO Orders (CustomerId, UserId, OrderDate, Subtotal, DiscountAmount, TotalAmount, PaymentMethod, Notes) 
+            OUTPUT INSERTED.Id 
+            VALUES (@cid, @uid, @date, @subtotal, @discount, @total, @payment, @notes)";
 
                         int newOrderId;
                         using (var cmdOrder = new SqlCommand(sqlOrder, conn, trans))
@@ -67,7 +70,7 @@ namespace SportShop.Controller
                             cmdOrder.Parameters.Add(new SqlParameter("@uid", SqlDbType.Int) { Value = order.UserId });
                             cmdOrder.Parameters.Add(new SqlParameter("@date", SqlDbType.DateTime) { Value = order.OrderDate ?? DateTime.Now });
 
-                            // 👉 Truyền đầy đủ tiền vào SQL
+                            // Truyền đầy đủ tiền vào SQL
                             cmdOrder.Parameters.Add(new SqlParameter("@subtotal", SqlDbType.Decimal) { Value = order.Subtotal ?? 0m });
                             cmdOrder.Parameters.Add(new SqlParameter("@discount", SqlDbType.Decimal) { Value = order.DiscountAmount ?? 0m });
                             cmdOrder.Parameters.Add(new SqlParameter("@total", SqlDbType.Decimal) { Value = order.TotalAmount ?? 0m });
@@ -75,6 +78,7 @@ namespace SportShop.Controller
                             cmdOrder.Parameters.Add(new SqlParameter("@payment", SqlDbType.NVarChar) { Value = order.PaymentMethod ?? "Tiền mặt" });
                             cmdOrder.Parameters.Add(new SqlParameter("@notes", SqlDbType.NVarChar) { Value = (object)order.Notes ?? DBNull.Value });
 
+                            // Lấy ID vừa được tạo bằng OUTPUT INSERTED.Id
                             newOrderId = Convert.ToInt32(cmdOrder.ExecuteScalar());
                         }
 
@@ -113,13 +117,31 @@ namespace SportShop.Controller
                             }
                         }
 
+                        // =========================================================
+                        // 3.3 LƯU VẾT VOUCHER VÀO BẢNG OrderVoucher (NẾU CÓ)
+                        // =========================================================
+                        if (appliedVoucherId.HasValue && appliedVoucherId.Value > 0)
+                        {
+                            const string sqlOrderVoucher = "INSERT INTO OrderVoucher (OrderId, VoucherId, AppliedDate) VALUES (@oid, @vid, GETDATE())";
+                            using (var cmdVoucher = new SqlCommand(sqlOrderVoucher, conn, trans))
+                            {
+                                cmdVoucher.Parameters.Add(new SqlParameter("@oid", SqlDbType.Int) { Value = newOrderId });
+                                cmdVoucher.Parameters.Add(new SqlParameter("@vid", SqlDbType.Int) { Value = appliedVoucherId.Value });
+                                cmdVoucher.ExecuteNonQuery();
+                            }
+                        }
+
                         trans.Commit();
-                        return true;
+
+                        // Trả về Mã ID của hóa đơn để View bắt lấy và truyền sang file in PDF
+                        return newOrderId;
                     }
                     catch
                     {
                         try { trans.Rollback(); } catch { }
-                        return false;
+
+                        //  Nếu lỗi thì trả về -1 thay vì false
+                        return -1;
                     }
                 }
             }

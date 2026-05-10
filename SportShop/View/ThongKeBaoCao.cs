@@ -72,7 +72,7 @@ namespace SportShop.View
         }
 
         // ==============================================================
-        // HÀM ĐIỀU PHỐI CHÍNH (Đã được chia nhỏ để code "sạch" hơn)
+        // HÀM ĐIỀU PHỐI CHÍNH
         // ==============================================================
         public void LoadDashboardData()
         {
@@ -92,7 +92,7 @@ namespace SportShop.View
         }
 
         // --------------------------------------------------------------
-        // 1. CẬP NHẬT CÁC THẺ CARD TỔNG QUAN TÀI CHÍNH
+        // 1. CẬP NHẬT THẺ TỔNG QUAN TÀI CHÍNH
         // --------------------------------------------------------------
         private void UpdateOverviewCards(DateTime tuNgay, DateTime denNgay)
         {
@@ -103,7 +103,6 @@ namespace SportShop.View
             lblTongKhachHang.Text = hienTai.LoiNhuanRong.ToString("N0") + " ₫";
             lblTongKhachHang.ForeColor = hienTai.LoiNhuanRong < 0 ? System.Drawing.Color.Red : System.Drawing.Color.FromArgb(40, 167, 69);
 
-            // Tính toán tháng trước để so sánh
             TimeSpan khoangThoiGian = denNgay - tuNgay;
             DateTime tuNgayTruoc = tuNgay.AddDays(-khoangThoiGian.TotalDays);
             DateTime denNgayTruoc = tuNgay.AddTicks(-1);
@@ -120,7 +119,6 @@ namespace SportShop.View
         // --------------------------------------------------------------
         private void UpdateCharts(DateTime tuNgay, DateTime denNgay)
         {
-            // A. Biểu đồ Kép (Doanh thu & Lợi nhuận)
             List<BaoCaoDoanhThu> dtNgay = _controller.GetDoanhThuLoiNhuanTheoNgay(tuNgay, denNgay);
             chartDoanhThu.Series.Clear();
 
@@ -139,7 +137,6 @@ namespace SportShop.View
             chartDoanhThu.ChartAreas[0].AxisX.MajorGrid.Enabled = false;
             chartDoanhThu.ChartAreas[0].AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
 
-            // B. Biểu đồ Tròn (Top Sản Phẩm)
             List<ThongKeSanPham> topSP = _controller.GetTopSanPhamBanChay(5, tuNgay, denNgay);
             chartTopSP.Series.Clear();
             Series seriesTopSP = new Series("TopSanPham") { ChartType = SeriesChartType.Doughnut, IsValueShownAsLabel = true };
@@ -156,25 +153,32 @@ namespace SportShop.View
         // --------------------------------------------------------------
         private void UpdateDetailGrids(DateTime tuNgay, DateTime denNgay)
         {
-            // Bảng 1: Chi tiết Hóa đơn
             dgvChiTietHoaDon.DataSource = _controller.GetChiTietHoaDon(tuNgay, denNgay);
             if (dgvChiTietHoaDon.Columns.Count > 0)
             {
                 dgvChiTietHoaDon.Columns["Doanh Thu"].DefaultCellStyle.Format = "N0";
-                dgvChiTietHoaDon.Columns["Giá Vốn (Trừ Kho)"].DefaultCellStyle.Format = "N0";
-                dgvChiTietHoaDon.Columns["Lợi Nhuận"].DefaultCellStyle.Format = "N0";
-                dgvChiTietHoaDon.Columns["Lợi Nhuận"].DefaultCellStyle.ForeColor = System.Drawing.Color.FromArgb(40, 167, 69);
-                dgvChiTietHoaDon.Columns["Lợi Nhuận"].DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+                dgvChiTietHoaDon.Columns["Giá Vốn"].DefaultCellStyle.Format = "N0";
+
+                if (dgvChiTietHoaDon.Columns.Contains("Giảm Giá"))
+                {
+                    dgvChiTietHoaDon.Columns["Giảm Giá"].DefaultCellStyle.Format = "N0";
+                    dgvChiTietHoaDon.Columns["Giảm Giá"].DefaultCellStyle.ForeColor = System.Drawing.Color.DarkOrange;
+                }
+
+                if (dgvChiTietHoaDon.Columns.Contains("Lợi Nhuận"))
+                {
+                    dgvChiTietHoaDon.Columns["Lợi Nhuận"].DefaultCellStyle.Format = "N0";
+                    dgvChiTietHoaDon.Columns["Lợi Nhuận"].DefaultCellStyle.ForeColor = System.Drawing.Color.FromArgb(40, 167, 69);
+                    dgvChiTietHoaDon.Columns["Lợi Nhuận"].DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+                }
             }
 
-            // Bảng 2: Top Khách Hàng
             dgvTopKhachHang.DataSource = _controller.GetTopKhachHang(5, tuNgay, denNgay);
             if (dgvTopKhachHang.Columns.Count > 0)
             {
                 dgvTopKhachHang.Columns["TongChiTieu"].DefaultCellStyle.Format = "N0";
             }
 
-            // Bảng 3: Cảnh báo tồn kho
             dgvTonKhoThap.DataSource = _controller.GetSanPhamTonKhoThap(10);
             if (dgvTonKhoThap.Columns.Count > 0)
             {
@@ -185,7 +189,114 @@ namespace SportShop.View
         }
 
         // ==============================================================
-        // HÀM HELPER: TÍNH % SO SÁNH VÀ ĐỔI MÀU LABEL
+        // XUẤT EXCEL
+        // ==============================================================
+        private void btnXuatExcel_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using (SaveFileDialog sfd = new SaveFileDialog() { Filter = "Excel Workbook|*.xlsx", FileName = $"BaoCao_ChiTiet_HoaDon_{DateTime.Now:ddMMyyyy}.xlsx" })
+                {
+                    if (sfd.ShowDialog() == DialogResult.OK)
+                    {
+                        using (var workbook = new XLWorkbook())
+                        {
+                            var wsHoaDon = workbook.Worksheets.Add("Chi Tiết Hóa Đơn");
+
+                            DateTime tuNgay = dtpTuNgay.Value.Date;
+                            // Lấy hết ngày đến 23:59:59 để đảm bảo không rớt bill
+                            DateTime denNgay = dtpDenNgay.Value.Date.AddDays(1).AddTicks(-1);
+
+                            DataTable dtHoaDon = _controller.GetChiTietHoaDon(tuNgay, denNgay);
+
+                            // 👉 FIX 1: Đặt tên cho DataTable để InsertTable không bị crash
+                            dtHoaDon.TableName = "BangChiTietHoaDon";
+
+                            TongQuanTaiChinh tq = _controller.GetTongQuanTaiChinh(tuNgay, denNgay);
+
+                            if (dtHoaDon.Rows.Count > 0)
+                            {
+                                var titleHD = wsHoaDon.Range(1, 1, 2, dtHoaDon.Columns.Count);
+                                titleHD.Merge().Value = $"BẢNG KÊ CHI TIẾT HÓA ĐƠN TỪ {tuNgay:dd/MM/yyyy} ĐẾN {denNgay:dd/MM/yyyy}";
+                                titleHD.Style.Font.Bold = true;
+                                titleHD.Style.Font.FontSize = 14;
+                                titleHD.Style.Font.FontColor = XLColor.White;
+                                titleHD.Style.Fill.BackgroundColor = XLColor.FromHtml("#17a2b8");
+                                titleHD.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                                titleHD.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+                                var table = wsHoaDon.Cell(4, 1).InsertTable(dtHoaDon);
+                                table.Theme = XLTableTheme.TableStyleMedium2;
+
+                                // 👉 FIX 2: Bọc chữ đ trong ngoặc kép "\"₫\""
+                                wsHoaDon.Columns(4, 7).Style.NumberFormat.Format = "#,##0 \"₫\"";
+                                wsHoaDon.Columns().AdjustToContents();
+
+                                int lastRow = 4 + dtHoaDon.Rows.Count + 1;
+
+                                int rowTongGop = lastRow + 2;
+                                wsHoaDon.Cell(rowTongGop, 5).Value = "Tổng Lợi Nhuận Gộp (Từ bán hàng):";
+                                wsHoaDon.Cell(rowTongGop, 5).Style.Font.Bold = true;
+                                wsHoaDon.Cell(rowTongGop, 5).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                                wsHoaDon.Range(rowTongGop, 5, rowTongGop, 6).Merge();
+
+                                // 👉 FIX 3: Thêm dấu = vào công thức Formula
+                                wsHoaDon.Cell(rowTongGop, 7).FormulaA1 = $"=SUM(G5:G{lastRow - 1})";
+                                wsHoaDon.Cell(rowTongGop, 7).Style.Font.Bold = true;
+                                wsHoaDon.Cell(rowTongGop, 7).Style.NumberFormat.Format = "#,##0 \"₫\"";
+
+                                int rowChiPhi = rowTongGop + 1;
+                                wsHoaDon.Cell(rowChiPhi, 5).Value = "(-) Tổng Chi Phí (Lương, Điện, Mặt bằng...):";
+                                wsHoaDon.Cell(rowChiPhi, 5).Style.Font.Bold = true;
+                                wsHoaDon.Cell(rowChiPhi, 5).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                                wsHoaDon.Range(rowChiPhi, 5, rowChiPhi, 6).Merge();
+
+                                // Tránh lỗi NullReferenceException nếu tq rỗng
+                                decimal chiPhiKhac = tq != null ? tq.TongChiPhiKhac : 0;
+                                wsHoaDon.Cell(rowChiPhi, 7).Value = chiPhiKhac;
+                                wsHoaDon.Cell(rowChiPhi, 7).Style.Font.Bold = true;
+                                wsHoaDon.Cell(rowChiPhi, 7).Style.Font.FontColor = XLColor.Red;
+                                wsHoaDon.Cell(rowChiPhi, 7).Style.NumberFormat.Format = "#,##0 \"₫\"";
+
+                                int rowRong = rowChiPhi + 1;
+                                wsHoaDon.Cell(rowRong, 5).Value = "(=) LỢI NHUẬN RÒNG (LÃI THỰC TẾ):";
+                                wsHoaDon.Cell(rowRong, 5).Style.Font.Bold = true;
+                                wsHoaDon.Cell(rowRong, 5).Style.Font.FontSize = 12;
+                                wsHoaDon.Cell(rowRong, 5).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                                wsHoaDon.Range(rowRong, 5, rowRong, 6).Merge();
+
+                                // 👉 FIX 3: Thêm dấu = vào công thức Formula
+                                wsHoaDon.Cell(rowRong, 7).FormulaA1 = $"=G{rowTongGop}-G{rowChiPhi}";
+                                wsHoaDon.Cell(rowRong, 7).Style.Font.Bold = true;
+                                wsHoaDon.Cell(rowRong, 7).Style.Font.FontSize = 12;
+                                wsHoaDon.Cell(rowRong, 7).Style.Font.FontColor = XLColor.FromHtml("#28a745");
+                                wsHoaDon.Cell(rowRong, 7).Style.NumberFormat.Format = "#,##0 \"₫\"";
+
+                                var summaryRange = wsHoaDon.Range(rowTongGop, 5, rowRong, 7);
+                                summaryRange.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
+                                summaryRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+                                wsHoaDon.Columns().AdjustToContents();
+                            }
+                            else
+                            {
+                                wsHoaDon.Cell(1, 1).Value = "Không có dữ liệu hóa đơn trong khoảng thời gian này.";
+                            }
+
+                            workbook.SaveAs(sfd.FileName);
+                            MessageBox.Show("Xuất Báo cáo Chi tiết thành công!", "Hoàn tất", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Nhớ đóng file Excel nếu bạn đang mở nó nhé, lỗi "Process cannot access file..." rất hay xảy ra
+                MessageBox.Show("Lỗi xuất Excel: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ==============================================================
+        // HÀM HELPER
         // ==============================================================
         private void HienThiSoSanh(Label lbl, decimal hienTai, decimal kyTruoc)
         {
@@ -201,121 +312,17 @@ namespace SportShop.View
             if (phanTram > 0)
             {
                 lbl.Text = $"▲ {phanTram:F1}% so với kỳ trước";
-                lbl.ForeColor = System.Drawing.Color.FromArgb(40, 167, 69); // Xanh lá
+                lbl.ForeColor = System.Drawing.Color.FromArgb(40, 167, 69);
             }
             else if (phanTram < 0)
             {
                 lbl.Text = $"▼ {Math.Abs(phanTram):F1}% so với kỳ trước";
-                lbl.ForeColor = System.Drawing.Color.Red; // Đỏ
+                lbl.ForeColor = System.Drawing.Color.Red;
             }
             else
             {
                 lbl.Text = "Tương đương kỳ trước";
-                lbl.ForeColor = System.Drawing.Color.Gray; // Xám
-            }
-        }
-
-        // ==============================================================
-        // XUẤT EXCEL 3 SHEET CHUYÊN NGHIỆP
-        // ==============================================================
-        private void btnXuatExcel_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                using (SaveFileDialog sfd = new SaveFileDialog() { Filter = "Excel Workbook|*.xlsx", FileName = $"BaoCao_ChiTiet_HoaDon_{DateTime.Now:ddMMyyyy}.xlsx" })
-                {
-                    if (sfd.ShowDialog() == DialogResult.OK)
-                    {
-                        using (var workbook = new XLWorkbook())
-                        {
-                            var wsHoaDon = workbook.Worksheets.Add("Chi Tiết Hóa Đơn");
-
-                            DateTime tuNgay = dtpTuNgay.Value.Date;
-                            DateTime denNgay = dtpDenNgay.Value.Date;
-
-                            // 1. Lấy dữ liệu Hóa đơn (Bảng chi tiết)
-                            DataTable dtHoaDon = _controller.GetChiTietHoaDon(tuNgay, denNgay);
-
-                            // 2. Lấy dữ liệu Tổng quan (Để có biến Lương, Chi phí phát sinh)
-                            TongQuanTaiChinh tq = _controller.GetTongQuanTaiChinh(tuNgay, denNgay.AddDays(1).AddTicks(-1));
-
-                            if (dtHoaDon.Rows.Count > 0)
-                            {
-                                // --- PHẦN 1: BẢNG CHI TIẾT ---
-                                var titleHD = wsHoaDon.Range(1, 1, 2, dtHoaDon.Columns.Count);
-                                titleHD.Merge().Value = $"BẢNG KÊ CHI TIẾT HÓA ĐƠN TỪ {tuNgay:dd/MM/yyyy} ĐẾN {denNgay:dd/MM/yyyy}";
-                                titleHD.Style.Font.Bold = true;
-                                titleHD.Style.Font.FontSize = 14;
-                                titleHD.Style.Font.FontColor = XLColor.White;
-                                titleHD.Style.Fill.BackgroundColor = XLColor.FromHtml("#17a2b8");
-                                titleHD.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                                titleHD.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-
-                                var table = wsHoaDon.Cell(4, 1).InsertTable(dtHoaDon);
-                                table.Theme = XLTableTheme.TableStyleMedium2;
-
-                                wsHoaDon.Columns(4, 6).Style.NumberFormat.Format = "#,##0 ₫";
-                                wsHoaDon.Columns().AdjustToContents();
-
-                                // --- PHẦN 2: BẢNG TỔNG KẾT TÀI CHÍNH CUỐI FILE ---
-                                int lastRow = 4 + dtHoaDon.Rows.Count + 1;
-
-                                // Dòng 1: Tổng Lợi nhuận gộp từ bán hàng (Tự động SUM cột Lợi nhuận)
-                                int rowTongGop = lastRow + 2;
-                                wsHoaDon.Cell(rowTongGop, 4).Value = "Tổng Lợi Nhuận Gộp (Từ bán hàng):";
-                                wsHoaDon.Cell(rowTongGop, 4).Style.Font.Bold = true;
-                                wsHoaDon.Cell(rowTongGop, 4).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
-                                wsHoaDon.Range(rowTongGop, 4, rowTongGop, 5).Merge(); // Gộp ô cho đẹp
-
-                                wsHoaDon.Cell(rowTongGop, 6).FormulaA1 = $"SUM(F5:F{lastRow - 1})";
-                                wsHoaDon.Cell(rowTongGop, 6).Style.Font.Bold = true;
-                                wsHoaDon.Cell(rowTongGop, 6).Style.NumberFormat.Format = "#,##0 ₫";
-
-                                // Dòng 2: Trừ đi Lương & Chi phí vận hành (Lấy từ bảng Expense)
-                                int rowChiPhi = rowTongGop + 1;
-                                wsHoaDon.Cell(rowChiPhi, 4).Value = "(-) Tổng Chi Phí (Lương, Điện, Mặt bằng...):";
-                                wsHoaDon.Cell(rowChiPhi, 4).Style.Font.Bold = true;
-                                wsHoaDon.Cell(rowChiPhi, 4).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
-                                wsHoaDon.Range(rowChiPhi, 4, rowChiPhi, 5).Merge();
-
-                                wsHoaDon.Cell(rowChiPhi, 6).Value = tq.TongChiPhiKhac; // Truyền dữ liệu chi phí vào
-                                wsHoaDon.Cell(rowChiPhi, 6).Style.Font.Bold = true;
-                                wsHoaDon.Cell(rowChiPhi, 6).Style.Font.FontColor = XLColor.Red; // Bôi đỏ khoản trừ
-                                wsHoaDon.Cell(rowChiPhi, 6).Style.NumberFormat.Format = "#,##0 ₫";
-
-                                // Dòng 3: Lợi nhuận Ròng (Thực lãi)
-                                int rowRong = rowChiPhi + 1;
-                                wsHoaDon.Cell(rowRong, 4).Value = "(=) LỢI NHUẬN RÒNG (LÃI THỰC TẾ):";
-                                wsHoaDon.Cell(rowRong, 4).Style.Font.Bold = true;
-                                wsHoaDon.Cell(rowRong, 4).Style.Font.FontSize = 12;
-                                wsHoaDon.Cell(rowRong, 4).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
-                                wsHoaDon.Range(rowRong, 4, rowRong, 5).Merge();
-
-                                wsHoaDon.Cell(rowRong, 6).FormulaA1 = $"F{rowTongGop} - F{rowChiPhi}";
-                                wsHoaDon.Cell(rowRong, 6).Style.Font.Bold = true;
-                                wsHoaDon.Cell(rowRong, 6).Style.Font.FontSize = 12;
-                                wsHoaDon.Cell(rowRong, 6).Style.Font.FontColor = XLColor.FromHtml("#28a745"); // Bôi xanh lá
-                                wsHoaDon.Cell(rowRong, 6).Style.NumberFormat.Format = "#,##0 ₫";
-
-                                // Kẻ viền cho bảng tổng kết
-                                var summaryRange = wsHoaDon.Range(rowTongGop, 4, rowRong, 6);
-                                summaryRange.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
-                                summaryRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
-                            }
-                            else
-                            {
-                                wsHoaDon.Cell(1, 1).Value = "Không có dữ liệu hóa đơn trong khoảng thời gian này.";
-                            }
-
-                            workbook.SaveAs(sfd.FileName);
-                            MessageBox.Show("Xuất Báo cáo Chi tiết thành công! Đã đính kèm bảng Tổng trừ lương và chi phí ở cuối file.", "Hoàn tất", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi xuất Excel: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                lbl.ForeColor = System.Drawing.Color.Gray;
             }
         }
     }

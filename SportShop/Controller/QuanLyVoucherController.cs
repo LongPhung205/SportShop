@@ -151,7 +151,7 @@ namespace SportShop.Controller
         // ==========================================
         // 7. KIỂM TRA VOUCHER KHI THANH TOÁN
         // ==========================================
-        public Voucher GetValidVoucherToApply(string code, decimal currentOrderTotal)
+        public Voucher GetValidVoucherToApply(string code, decimal currentOrderTotal, int? customerId = null)
         {
             const string sql = "SELECT * FROM Voucher WHERE Code = @code AND IsActive = 1";
             var p = new SqlParameter("@code", SqlDbType.NVarChar, 30) { Value = code };
@@ -162,18 +162,28 @@ namespace SportShop.Controller
 
             Voucher v = list[0];
 
-            // 1. Kiểm tra hạn sử dụng (So sánh đến mức ngày/giờ hiện tại)
+            // 1. Kiểm tra hạn sử dụng
             if (v.ExpiryDate < DateTime.Now) return null;
 
-            // 2. Kiểm tra lượt sử dụng tối đa
+            // 2. Kiểm tra tổng lượt sử dụng của toàn hệ thống
             if (v.MaxUsage.HasValue && v.CurrentUsage >= v.MaxUsage.Value) return null;
 
             // 3. Kiểm tra giá trị đơn hàng tối thiểu
             if (v.MinimumOrderAmount.HasValue && currentOrderTotal < v.MinimumOrderAmount.Value) return null;
 
+            // 4. 👉 BỔ SUNG: Kiểm tra giới hạn lượt dùng của từng khách hàng (PerCustomerLimit)
+            if (customerId.HasValue && customerId.Value > 0 && v.PerCustomerLimit > 0)
+            {
+                int usageCount = GetVoucherUsageByCustomer(v.Id, customerId.Value);
+                if (usageCount >= v.PerCustomerLimit)
+                {
+                    // Trả về null (hoặc bạn có thể ném Exception để hiện thông báo chi tiết bên View)
+                    return null;
+                }
+            }
+
             return v;
         }
-
         // ==========================================
         // [NÂNG CẤP] 8. TĂNG LƯỢT SỬ DỤNG KHI THANH TOÁN XONG
         // ==========================================
@@ -190,6 +200,28 @@ namespace SportShop.Controller
             return DBConnection.ExecuteNonQuery(sql, new[] { p }) > 0;
         }
 
+        public int GetVoucherUsageByCustomer(int voucherId, int customerId)
+        {
+            // Nối bảng OrderVoucher và Orders để đếm số lần khách hàng đã dùng mã này
+            const string sql = @"
+                SELECT COUNT(ov.VoucherId) 
+                FROM OrderVoucher ov
+                JOIN Orders o ON ov.OrderId = o.Id
+                WHERE ov.VoucherId = @vid AND o.CustomerId = @cid";
+
+            var parameters = new[]
+            {
+                new SqlParameter("@vid", SqlDbType.Int) { Value = voucherId },
+                new SqlParameter("@cid", SqlDbType.Int) { Value = customerId }
+            };
+
+            DataTable dt = DBConnection.GetDataTable(sql, parameters);
+            if (dt.Rows.Count > 0 && dt.Rows[0][0] != DBNull.Value)
+            {
+                return Convert.ToInt32(dt.Rows[0][0]);
+            }
+            return 0;
+        }
         // ==========================================
         // HÀM HELPER: CHUYỂN DATATABLE SANG LIST MODEL
         // ==========================================

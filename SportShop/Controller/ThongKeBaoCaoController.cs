@@ -62,21 +62,44 @@ namespace SportShop.Controller
         // ==========================================
         public List<BaoCaoDoanhThu> GetDoanhThuLoiNhuanTheoNgay(DateTime tuNgay, DateTime denNgay)
         {
+            // Sử dụng CTE để bóc tách riêng lẻ Doanh Thu và Giá Vốn, tránh bị đúp dữ liệu khi JOIN
             const string sql = @"
-                SELECT CAST(OrderDate AS DATE) AS Ngay, 
-                       COUNT(Id) AS SoLuongDon, 
-                       ISNULL(SUM(TotalAmount), 0) AS TongDoanhThu
-                FROM Orders
-                WHERE CAST(OrderDate AS DATE) >= CAST(@tuNgay AS DATE) 
-                  AND CAST(OrderDate AS DATE) <= CAST(@denNgay AS DATE)
-                GROUP BY CAST(OrderDate AS DATE)
-                ORDER BY CAST(OrderDate AS DATE) ASC";
+        WITH DoanhThuCTE AS (
+            SELECT 
+                CAST(OrderDate AS DATE) AS Ngay,
+                COUNT(Id) AS SoLuongDon,
+                ISNULL(SUM(TotalAmount), 0) AS TongDoanhThu
+            FROM Orders
+            WHERE CAST(OrderDate AS DATE) >= CAST(@tuNgay AS DATE)
+              AND CAST(OrderDate AS DATE) <= CAST(@denNgay AS DATE)
+            GROUP BY CAST(OrderDate AS DATE)
+        ),
+        GiaVonCTE AS (
+            SELECT 
+                CAST(o.OrderDate AS DATE) AS Ngay,
+               
+                ISNULL(SUM(od.Quantity * pv.CostPrice), 0) AS TongGiaVon
+            FROM Orders o
+            JOIN OrderDetail od ON o.Id = od.OrderId
+            JOIN ProductVariant pv ON od.ProductVariantId = pv.Id
+            WHERE CAST(o.OrderDate AS DATE) >= CAST(@tuNgay AS DATE)
+              AND CAST(o.OrderDate AS DATE) <= CAST(@denNgay AS DATE)
+            GROUP BY CAST(o.OrderDate AS DATE)
+        )
+        SELECT 
+            d.Ngay, 
+            d.SoLuongDon, 
+            d.TongDoanhThu, 
+            ISNULL(v.TongGiaVon, 0) AS TongGiaVon
+        FROM DoanhThuCTE d
+        LEFT JOIN GiaVonCTE v ON d.Ngay = v.Ngay
+        ORDER BY d.Ngay ASC";
 
             var parameters = new[]
             {
-                new SqlParameter("@tuNgay", SqlDbType.Date) { Value = tuNgay },
-                new SqlParameter("@denNgay", SqlDbType.Date) { Value = denNgay }
-            };
+        new SqlParameter("@tuNgay", SqlDbType.Date) { Value = tuNgay },
+        new SqlParameter("@denNgay", SqlDbType.Date) { Value = denNgay }
+    };
 
             DataTable dt = DBConnection.GetDataTable(sql, parameters);
             var list = new List<BaoCaoDoanhThu>();
@@ -84,15 +107,19 @@ namespace SportShop.Controller
             foreach (DataRow row in dt.Rows)
             {
                 decimal doanhThu = Convert.ToDecimal(row["TongDoanhThu"]);
+                decimal giaVon = Convert.ToDecimal(row["TongGiaVon"]);
+
                 list.Add(new BaoCaoDoanhThu
                 {
                     Ngay = Convert.ToDateTime(row["Ngay"]),
                     SoLuongDon = Convert.ToInt32(row["SoLuongDon"]),
                     TongDoanhThu = doanhThu,
-                    // Lợi nhuận tạm tính (Giả định tỷ suất 30% để vẽ biểu đồ)
-                    LoiNhuan = doanhThu * 0.3m
+
+                    // 👉 CHUẨN KẾ TOÁN: Lợi Nhuận Gộp = Doanh Thu Thực Tế - Giá Vốn
+                    LoiNhuan = doanhThu - giaVon
                 });
             }
+
             return list;
         }
 
@@ -189,29 +216,41 @@ namespace SportShop.Controller
         // ==========================================
         public DataTable GetChiTietHoaDon(DateTime tuNgay, DateTime denNgay)
         {
-            // Đã đổi c.FullName thành c.Name
-            // Đã đổi pv.ImportPrice thành pv.CostPrice (Giá vốn lưu trong ProductVariant)
+            // Bóc tách Doanh thu gốc (Quantity * UnitPrice), Giá Vốn, và DiscountAmount
             string sql = @"
-                SELECT 
-                    o.Id AS [Mã HĐ],
-                    o.OrderDate AS [Ngày Bán],
-                    ISNULL(c.Name, N'Khách vãng lai') AS [Khách Hàng],
-                    ISNULL(SUM(od.Quantity * od.UnitPrice), 0) AS [Doanh Thu],
-                    ISNULL(SUM(od.Quantity * pv.CostPrice), 0) AS [Giá Vốn (Trừ Kho)],
-                    ISNULL(SUM(od.Quantity * od.UnitPrice), 0) - ISNULL(SUM(od.Quantity * pv.CostPrice), 0) AS [Lợi Nhuận]
-                FROM Orders o
-                INNER JOIN OrderDetail od ON o.Id = od.OrderId
-                INNER JOIN ProductVariant pv ON od.ProductVariantId = pv.Id
-                LEFT JOIN Customer c ON o.CustomerId = c.Id
-                WHERE CAST(o.OrderDate AS DATE) >= CAST(@tu AS DATE) 
-                  AND CAST(o.OrderDate AS DATE) <= CAST(@den AS DATE)
-                GROUP BY o.Id, o.OrderDate, c.Name
-                ORDER BY o.OrderDate DESC";
+        SELECT 
+            'HD' + RIGHT('00000' + CAST(o.Id AS VARCHAR), 5) AS [Mã HĐ],
+            FORMAT(o.OrderDate, 'dd/MM/yyyy HH:mm') AS [Ngày Lập],
+            ISNULL(c.Name, N'Khách vãng lai') AS [Khách Hàng],
+            
+            ISNULL(SUM(od.Quantity * od.UnitPrice), 0) AS [Doanh Thu],
+            ISNULL(SUM(od.Quantity * pv.CostPrice), 0) AS [Giá Vốn],
+            ISNULL(o.DiscountAmount, 0) AS [Giảm Giá],
+            
+            ISNULL(SUM(od.Quantity * od.UnitPrice), 0) 
+            - ISNULL(SUM(od.Quantity * pv.CostPrice), 0) 
+            - ISNULL(o.DiscountAmount, 0) AS [Lợi Nhuận]
+        FROM Orders o         
+        LEFT JOIN Customer c ON o.CustomerId = c.Id 
 
-            return DBConnection.GetDataTable(sql, new[] {
-                new SqlParameter("@tu", SqlDbType.Date) { Value = tuNgay },
-                new SqlParameter("@den", SqlDbType.Date) { Value = denNgay }
-            });
+        JOIN OrderDetail od ON o.Id = od.OrderId
+        JOIN ProductVariant pv ON od.ProductVariantId = pv.Id
+        WHERE CAST(o.OrderDate AS DATE) >= CAST(@tuNgay AS DATE)
+          AND CAST(o.OrderDate AS DATE) <= CAST(@denNgay AS DATE)
+        GROUP BY 
+            o.Id, 
+            o.OrderDate, 
+            c.Name, 
+            o.DiscountAmount
+        ORDER BY o.OrderDate DESC";
+
+            var parameters = new[]
+            {
+        new System.Data.SqlClient.SqlParameter("@tuNgay", SqlDbType.Date) { Value = tuNgay },
+        new System.Data.SqlClient.SqlParameter("@denNgay", SqlDbType.Date) { Value = denNgay }
+    };
+
+            return DBConnection.GetDataTable(sql, parameters);
         }
     }
 }
